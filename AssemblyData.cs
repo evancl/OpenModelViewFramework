@@ -1,6 +1,6 @@
-namespace OpenModelViewLibrary;
+namespace OpenModelViewFramework;
 
-class AssemblyDataFile
+public class AssemblyData
 {
     // Assembly steps.
     AssemblyStep[] Steps;
@@ -20,7 +20,7 @@ class AssemblyDataFile
 
         name: The file name to use.
     */
-    void CreateAssemblyDataFile(string name)
+    void CreateFile(string name)
     {
         List<byte> data = new();
         GetBinaryRep(data);

@@ -1,4 +1,4 @@
-namespace OpenModelViewLibrary;
+namespace OpenModelViewFramework;
 
 public class Part : Component
 {
@@ -7,7 +7,7 @@ public class Part : Component
     {
         get; set
         {
-            if (value <= -1 || value > short.MaxValue)
+            if (value < 0 || value > short.MaxValue)
                 throw new ArgumentOutOfRangeException($"Part.ID must be between 0 and {short.MaxValue} inclusive.");
         }
     }
@@ -57,6 +57,16 @@ public class Part : Component
             }
         }
     }
+
+    public Part(short id, bool isHidden, string path, string name, byte[] properties, float[] transform)
+    {
+        ID = id;
+        IsHidden = isHidden;
+        Path = path;
+        Name = name;
+        Properties = properties;
+        Transform = transform;
+    }
     /*
         Gets the binary representation of this part.
 
@@ -68,5 +78,24 @@ public class Part : Component
         data.AddRange(Properties);
         for (var i = 0; i < Transform.Length; i++)
             data.AddRange(GetBytes(Transform[i]));
+    }
+    /*
+        Gets the binary representation of this part.
+
+        data: The binary representation.
+        properties: The properties to get.
+    */
+    internal override void GetBinaryRep(List<byte> data, byte properties)
+    {
+        base.GetBinaryRep(data, properties);
+        if ((properties & (1 << 1)) != 0)
+            data.AddRange(GetBytes(ID));
+        if ((properties & (1 << 2)) != 0)
+            data.AddRange(Properties);
+        if ((properties & (1 << 3)) != 0)
+        {
+            for (var i = 0; i < Transform.Length; i++)
+                data.AddRange(GetBytes(Transform[i]));
+        }
     }
 }

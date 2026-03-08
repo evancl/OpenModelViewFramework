@@ -1,16 +1,9 @@
-namespace OpenModelViewLibrary;
+namespace OpenModelViewFramework;
 
 public class Assembly : Component
 {
     // Identifier for geometry data. -1 indicates that this component is an assembly. Size: 2 bytes.
-    protected override short ID
-    {
-        get; set
-        {
-            if (value != -1)
-                throw new ArgumentOutOfRangeException("Assembly.ID must be equal to -1.");
-        }
-    }
+    protected override short ID => -1;
     // Child components.
     Component[] Children
     {
@@ -21,6 +14,14 @@ public class Assembly : Component
             else if (value.Length == 0 || value.Length > short.MaxValue)
                 throw new ArgumentOutOfRangeException($"Assembly.Children length must be between 1 and {short.MaxValue} inclusive.");
         }
+    }
+
+    public Assembly(bool isHidden, string path, string name, Component[] children)
+    {
+        IsHidden = isHidden;
+        Path = path;
+        Name = name;
+        Children = children;
     }
     /*
         Gets the binary representation of this assembly.

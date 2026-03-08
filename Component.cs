@@ -1,13 +1,13 @@
-namespace OpenModelViewLibrary;
+namespace OpenModelViewFramework;
 
 public abstract class Component
 {
     // Identifier for geometry data. -1 indicates that this component is an assembly. Size: 2 bytes.
-    protected abstract short ID;
+    public abstract short ID;
     // Indicates if this component is hidden. Size: 1 byte.
-    protected bool IsHidden;
+    public bool IsHidden;
     // Name in the model's feature tree. Size: 1 - 255 bytes.
-    protected string Name
+    public string Name
     {
         get; set
         {
@@ -16,6 +16,18 @@ public abstract class Component
             var length = Encoding.UTF8.GetBytes(value).Length;
             if (length == 0 || length > byte.MaxValue)
                 throw new ArgumentOutOfRangeException($"Component.Name length must be between 1 and {byte.MaxValue} inclusive.");
+        }
+    }
+    // Path relative to the root component. Size: 1 - 32767 bytes.
+    public string Path
+    {
+        get; set
+        {
+            if (value == null)
+                throw new ArgumentNullException("Component.Path cannot be null.");
+            var length = Encoding.UTF8.GetBytes(value).Length;
+            if (length == 0 || length > short.MaxValue)
+                throw new ArgumentOutOfRangeException($"Component.Path length must be between 1 and {short.MaxValue} inclusive.");
         }
     }
     /*
@@ -32,11 +44,26 @@ public abstract class Component
         data.AddRange(bytes);
     }
     /*
+        Gets the binary representation of this part.
+
+        data: The binary representation.
+        properties: The properties to get.
+    */
+    internal virtual void GetBinaryRep(List<byte> data, byte properties)
+    {
+        var bytes = Encoding.UTF8.GetBytes(Path);
+        data.AddRange(GetBytes((short)bytes.Length));
+        data.AddRange(bytes);
+        data.Add(properties);
+        if ((properties & 1) != 0)
+            data.Add(IsHidden ? (byte)1 : (byte)0);
+    }
+    /*
         Creates a ctree file in the current working directory.
 
         name: The file name to use.
     */
-    protected void CreateComponentTreeFile(string name)
+    public void CreateComponentTreeFile(string name)
     {
         List<byte> data = new();
         GetBinaryRep(data);
