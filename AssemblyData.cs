@@ -3,9 +3,23 @@ namespace OpenModelViewFramework;
 public class AssemblyData
 {
     // Assembly steps.
-    AssemblyStep[] Steps;
+    public AssemblyStep[] Steps
+    {
+        get; set
+        {
+            if (value == null)
+                throw new ArgumentNullException("AssemblyStep.Steps cannot be null.");
+            else if (value.Length == 0 || value.Length > short.MaxValue)
+                throw new ArgumentOutOfRangeException($"AssemblyStep.Steps length must be between 1 and {short.MaxValue} inclusive.");
+        }
+    }
+
+    public AssemblyData(int steps)
+    {
+        Steps = new AssemblyStep[steps];
+    }
     /*
-        Gets the binary representation of the assembly steps.
+        Gets the binary representation of the assembly data instance.
 
         data: The binary representation.
     */
@@ -20,7 +34,7 @@ public class AssemblyData
 
         name: The file name to use.
     */
-    void CreateFile(string name)
+    public void CreateFile(string name)
     {
         List<byte> data = new();
         GetBinaryRep(data);

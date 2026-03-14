@@ -1,6 +1,6 @@
 namespace OpenModelViewFramework;
 
-class AssemblyStep
+public class AssemblyStep
 {
     // Name of the assembly step.
     string Name
@@ -24,23 +24,29 @@ class AssemblyStep
         }
     }
     // Components in the assembly step.
-    AssemblyStepComponent[] Components
+    List<AssemblyStepComponent> Components
     {
         get; set
         {
             if (value == null)
                 throw new ArgumentNullException("AssemblyStep.Components cannot be null.");
-            var length = Encoding.UTF8.GetBytes(value).Length;
-            if (length == 0 || length > byte.MaxValue)
-                throw new ArgumentOutOfRangeException($"AssemblyStep.Components length must be between 1 and {short.MaxValue} inclusive.");
+            else if (value.Count == 0 || value.Count > short.MaxValue)
+                throw new ArgumentOutOfRangeException($"AssemblyStep.Components count must be between 1 and {short.MaxValue} inclusive.");
         }
+    }
+
+    public AssemblyStep(string name, Line[] lines, List<AssemblyStepComponent> components)
+    {
+        Name = name;
+        Lines = lines;
+        Components = components;
     }
     /*
         Gets the binary representation of the assembly step.
 
         data: The binary representation.
     */
-    void GetBinaryRep(List<byte> data)
+    internal void GetBinaryRep(List<byte> data)
     {
         var bytes = Encoding.UTF8.GetBytes(Name);
         data.Add((byte)bytes.Length);
@@ -53,7 +59,7 @@ class AssemblyStep
             foreach (var line in Lines)
                 line.GetBinaryRep(data);
         }
-        data.AddRange(GetBytes((short)Components.Length));
+        data.AddRange(GetBytes((short)Components.Count));
         foreach (var component in Components)
             component.GetBinaryRep(data);
     }

@@ -2,15 +2,15 @@ namespace OpenModelViewFramework;
 
 public static class ComponentExtensions
 {
-	/*
-		Gets the component name.
+    /*
+        Gets the component name.
 
-		component: The component to use.
-		document: The parent document.
-	*/
-	public static string GetName(this Component2 component, ModelDoc2 document)
-	{
-		var isSelected = document.Extension.SelectByID2(
+        component: The component to use.
+        document: The parent document.
+    */
+    public static string GetName(this Component2 component, ModelDoc2 document)
+    {
+        var isSelected = document.Extension.SelectByID2(
             component.GetSelectByIDString(),
             "COMPONENT",
             0,
@@ -22,9 +22,9 @@ public static class ComponentExtensions
             (int)swSelectOption_e.swSelectOptionDefault
         );
         if (!isSelected)
-            throw new AppException($"Component2.GetName error: Failed to select {component.Name2} in {document.GetPathName()}.");
+            throw new Exception($"Component2.GetName error: Failed to select {component.Name2} in {document.GetPathName()}.");
         var name = component.Name2;
         document.ClearSelection2(true);
         return name;
-	}
+    }
 }

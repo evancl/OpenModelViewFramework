@@ -16,11 +16,8 @@ public class Assembly : Component
         }
     }
 
-    public Assembly(bool isHidden, string path, string name, Component[] children)
+    public Assembly(bool isHidden, string path, string name, Component[] children) : base(isHidden, name, path)
     {
-        IsHidden = isHidden;
-        Path = path;
-        Name = name;
         Children = children;
     }
     /*
@@ -28,7 +25,7 @@ public class Assembly : Component
 
         data: The binary representation.
     */
-    protected override void GetBinaryRep(List<byte> data)
+    internal override void GetBinaryRep(List<byte> data)
     {
         base.GetBinaryRep(data);
         data.AddRange(GetBytes((short)Children.Length));

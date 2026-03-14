@@ -23,7 +23,7 @@ public class ComponentData
     // STL file names.
     string[] Files;
 
-    ComponentData()
+    public ComponentData()
     {
         var directory = Directory.GetCurrentDirectory();
         Files = Directory.GetFiles(
@@ -36,7 +36,7 @@ public class ComponentData
         Array.Sort(Files);
     }
     /*
-        Gets the binary representation of the component data file.
+        Gets the binary representation of the component data instance.
 
         data: The binary representation.
     */

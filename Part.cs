@@ -58,12 +58,9 @@ public class Part : Component
         }
     }
 
-    public Part(short id, bool isHidden, string path, string name, byte[] properties, float[] transform)
+    public Part(short id, bool isHidden, string path, string name, byte[] properties, float[] transform) : base(isHidden, name, path)
     {
         ID = id;
-        IsHidden = isHidden;
-        Path = path;
-        Name = name;
         Properties = properties;
         Transform = transform;
     }
@@ -72,7 +69,7 @@ public class Part : Component
 
         data: The binary representation.
     */
-    protected override void GetBinaryRep(List<byte> data)
+    internal override void GetBinaryRep(List<byte> data)
     {
         base.GetBinaryRep(data);
         data.AddRange(Properties);

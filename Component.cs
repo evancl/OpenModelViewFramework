@@ -1,13 +1,13 @@
 namespace OpenModelViewFramework;
 
-public abstract class Component
+public class Component
 {
     // Identifier for geometry data. -1 indicates that this component is an assembly. Size: 2 bytes.
-    public abstract short ID;
+    protected abstract short ID;
     // Indicates if this component is hidden. Size: 1 byte.
-    public bool IsHidden;
+    protected bool IsHidden;
     // Name in the model's feature tree. Size: 1 - 255 bytes.
-    public string Name
+    string Name
     {
         get; set
         {
@@ -19,7 +19,7 @@ public abstract class Component
         }
     }
     // Path relative to the root component. Size: 1 - 32767 bytes.
-    public string Path
+    string Path
     {
         get; set
         {
@@ -30,12 +30,19 @@ public abstract class Component
                 throw new ArgumentOutOfRangeException($"Component.Path length must be between 1 and {short.MaxValue} inclusive.");
         }
     }
+
+    private protected Component(bool isHidden, string name, string path)
+    {
+        IsHidden = isHidden;
+        Name = name;
+        Path = path;
+    }
     /*
         Gets the binary representation of this component.
 
         data: The binary representation.
     */
-    protected virtual void GetBinaryRep(List<byte> data)
+    internal virtual void GetBinaryRep(List<byte> data)
     {
         data.AddRange(GetBytes(ID));
         data.Add(IsHidden ? (byte)1 : (byte)0);
@@ -44,7 +51,7 @@ public abstract class Component
         data.AddRange(bytes);
     }
     /*
-        Gets the binary representation of this part.
+        Gets the binary representation of this component.
 
         data: The binary representation.
         properties: The properties to get.

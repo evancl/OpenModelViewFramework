@@ -3,6 +3,72 @@ namespace OpenModelViewFramework;
 public static class SldWorksExtensions
 {
     /*
+        Creates an assembly data instance using the model with the given file name.
+
+        app: The SOLIDWORKS application.
+        name: The file name.
+    */
+    public static AssemblyData CreateAssemblyData(this SldWorks app, string name)
+    {
+        if (!File.Exists(name))
+            throw new Exception($"SldWorks.CreateAssemblyData error: {name} doesn't exist.");
+        var extension = Path.GetExtension(name);
+        int documentType;
+        if (extension == ".sldasm")
+            documentType = (int)swDocumentTypes_e.swDocASSEMBLY;
+        else if (extension == ".sldprt")
+            documentType = (int)swDocumentTypes_e.swDocPART;
+        else
+            throw new Exception("SldWorks.CreateAssemblyData error: Acceptable document types are .sldasm and .sldprt.");
+        var directory = System.IO.Directory.GetCurrentDirectory();
+        int errors = 0, warnings = 0;
+        var document = app.OpenDoc6(
+            $"{directory}\\{name}",
+            documentType,
+            (int)swOpenDocOptions_e.swOpenDocOptions_Silent,
+            String.Empty,
+            ref errors,
+            ref warnings
+        );
+        if (errors != 0)
+            throw new Exception($"SldWorks.CreateAssemblyData error: Failed to open {name}. Errors: {errors}.");
+        document = (ModelDoc2)app.ActivateDoc3(
+            $"{directory}\\{name}",
+            false,
+            (int)swRebuildOnActivation_e.swRebuildActiveDoc,
+            ref errors
+        );
+        if (errors == (int)swActivateDocError_e.swGenericActivateError)
+            throw new Exception($"SldWorks.CreateAssemblyData error: Failed to activate {name}. Errors: {errors}.");
+        var config = document.ConfigurationManager.ActiveConfiguration;
+        var assembly = (AssemblyDoc)document;
+        var viewNames = (string[])assembly.GetExplodedViewNames2(config.Name);
+        var folders = document.FeatureManager.GetFolders();
+        if (folders.Count == 0)
+            throw new Exception($"SldWorks.CreateAssemblyData error: No folders were found in {name}.");
+        var data = new AssemblyData(folders.Count);
+        for (var i = 0; i < folders.Count; i++)
+        {
+            name = ((Feature)folders[i].Object).Name;
+            Line[] lines;
+            List<AssemblyStepComponent> components;
+            if (viewNames.Contains(name))
+            {
+                assembly.ShowExploded2(true, name);
+                lines = document.GetExplodeLines(name);
+                components = item.GetAssemblyComponents(document, true);
+                assembly.ShowExploded2(false, name);
+            }
+            else
+            {
+                lines = null;
+                components = item.GetAssemblyComponents(document, false);
+            }
+            data.Steps[i] = new AssemblyStep(name, lines, components);
+        }
+        return data;
+    }
+    /*
         Creates an stl file for every configuration of each filtered part in the current folder.
 
         app: The SOLIDWORKS application.
@@ -79,7 +145,7 @@ public static class SldWorksExtensions
         app: The SOLIDWORKS application.
         path: The path of the file.
     */
-    public static bool IsOpen(this SldWorks app, string path)
+    private static bool IsOpen(this SldWorks app, string path)
     {
         var documents = (object[])app.GetDocuments();
         for (var i = 0; i < documents.Length; i++)
@@ -153,9 +219,9 @@ public static class SldWorksExtensions
             documentType = (int)swDocumentTypes_e.swDocPART;
         else
             throw new Exception("SldWorks.CreateComponentTree error: Acceptable document types are .sldasm and .sldprt.");
-        Directory = System.IO.Directory.GetCurrentDirectory();
+        var directory = System.IO.Directory.GetCurrentDirectory();
         var files = System.IO.Directory.GetFiles(
-            Directory,
+            directory,
             "*.stl",
             SearchOption.AllDirectories
         );
@@ -165,7 +231,7 @@ public static class SldWorksExtensions
         Array.Sort(files);
         int errors = 0, warnings = 0;
         var document = app.OpenDoc6(
-            $"{Directory}\\{name}",
+            $"{directory}\\{name}",
             documentType,
             (int)swOpenDocOptions_e.swOpenDocOptions_Silent,
             String.Empty,
@@ -175,7 +241,7 @@ public static class SldWorksExtensions
         if (errors != 0)
             throw new Exception($"SldWorks.CreateComponentTree error: Failed to open {name}. Errors: {errors}.");
         document = (ModelDoc2)app.ActivateDoc3(
-            $"{Directory}\\{name}",
+            $"{directory}\\{name}",
             false,
             (int)swRebuildOnActivation_e.swRebuildActiveDoc,
             ref errors
@@ -312,8 +378,8 @@ public static class SldWorksExtensions
                     type,
                     [
                         isHidden,
-                        componentPath,
                         componentName,
+                        componentPath,
                         children
                     ]
                 );
@@ -322,8 +388,8 @@ public static class SldWorksExtensions
             {
                 component = new Assembly(
                     isHidden,
-                    componentPath,
                     componentName,
+                    componentPath,
                     children
                 );
             }
@@ -350,8 +416,8 @@ public static class SldWorksExtensions
                     [
                         id,
                         isHidden,
-                        componentPath,
                         componentName,
+                        componentPath,
                         componentProperties,
                         transform.GetData()
                     ]
@@ -362,8 +428,8 @@ public static class SldWorksExtensions
                 component = new Part(
                     id,
                     isHidden,
-                    componentPath,
                     componentName,
+                    componentPath,
                     componentProperties,
                     transform.GetData()
                 );

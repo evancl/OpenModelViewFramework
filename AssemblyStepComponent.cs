@@ -1,6 +1,6 @@
 namespace OpenModelViewFramework;
 
-class AssemblyStepComponent
+public class AssemblyStepComponent
 {
     // Name of the component.
     string Name
@@ -35,12 +35,18 @@ class AssemblyStepComponent
             }
         }
     }
+
+    public AssemblyStepComponent(string name, float[] transform)
+    {
+        Name = name;
+        Transform = transform;
+    }
     /*
         Gets the binary representation of the assembly step component.
 
         data: The binary representation.
     */
-    void GetBinaryRep(List<byte> data)
+    internal void GetBinaryRep(List<byte> data)
     {
         var bytes = Encoding.UTF8.GetBytes(Name);
         data.Add((byte)bytes.Length);
