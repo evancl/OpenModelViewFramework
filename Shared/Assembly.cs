@@ -32,4 +32,27 @@ public class Assembly : Component
         foreach (var child in Children)
             child.GetBinaryRep(data);
     }
+    /*
+        Gets the component at the given path.
+
+        path: The path of the component relative to this component.
+    */
+    public Component GetChild(string path)
+    {
+        var index = path.IndexOf('/');
+        var name = index == -1 ? path : path[..index];
+        Component component = null;
+        foreach (var child in Children)
+        {
+            if (child.Name == name)
+            {
+                component = child;
+                break;
+            }
+        }
+        if (component == null || index == -1)
+            return component;
+        path = path[(index + 1)..];
+        return ((Assembly)component).GetChild(path);
+    }
 }

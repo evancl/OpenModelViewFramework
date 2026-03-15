@@ -316,7 +316,7 @@ public static class SldWorksExtensions
                 {
                     app.OpenDoc6(
                         childComponent.GetPathName(),
-                        Path.GetExtension(childComponent.GetPathName()) == "sldprt" ? (int)swDocumentTypes_e.swDocPART : (int)swDocumentTypes_e.swDocASSEMBLY,
+                        Path.GetExtension(childComponent.GetPathName()) == ".sldprt" ? (int)swDocumentTypes_e.swDocPART : (int)swDocumentTypes_e.swDocASSEMBLY,
                         (int)swOpenDocOptions_e.swOpenDocOptions_Silent,
                         String.Empty,
                         ref errors,
@@ -352,7 +352,7 @@ public static class SldWorksExtensions
                 component = app.CreateComponentTree(
                     childComponentDocument,
                     files,
-                    $"{componentPath}/{childComponentName}"
+                    componentPath == String.Empty ? childComponentName : $"{componentPath}/{childComponentName}"
                     childComponentName,
                     property,
                     childComponent.ReferencedConfiguration,

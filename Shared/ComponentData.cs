@@ -11,8 +11,8 @@ public class ComponentData
                 throw new ArgumentOutOfRangeException($"ComponentData.IDs length must be between 1 and {short.MaxValue} inclusive.");
         }
     }
-    // Part properties to update.
-    public PartProperties[] Properties
+    // Component properties to update.
+    public ComponentProperties[] Properties
     {
         get; set
         {
@@ -34,6 +34,9 @@ public class ComponentData
         if (Files.Length == 0 || Files.Length > short.MaxValue)
             throw new AppException($"ComponentData.ComponentData error: STL file count must be between 1 and {short.MaxValue} inclusive.");
         Array.Sort(Files);
+        IDs = new short[Files.Length];
+        for (var i = 0; i < Files.Length; i++)
+            IDs[i] = i;
     }
     /*
         Gets the binary representation of the component data instance.

@@ -7,34 +7,24 @@ public class Component
     // Indicates if this component is hidden. Size: 1 byte.
     protected bool IsHidden;
     // Name in the model's feature tree. Size: 1 - 255 bytes.
-    string Name
-    {
-        get; set
-        {
-            if (value == null)
-                throw new ArgumentNullException("Component.Name cannot be null.");
-            var length = Encoding.UTF8.GetBytes(value).Length;
-            if (length == 0 || length > byte.MaxValue)
-                throw new ArgumentOutOfRangeException($"Component.Name length must be between 1 and {byte.MaxValue} inclusive.");
-        }
-    }
-    // Path relative to the root component. Size: 1 - 32767 bytes.
-    string Path
-    {
-        get; set
-        {
-            if (value == null)
-                throw new ArgumentNullException("Component.Path cannot be null.");
-            var length = Encoding.UTF8.GetBytes(value).Length;
-            if (length == 0 || length > short.MaxValue)
-                throw new ArgumentOutOfRangeException($"Component.Path length must be between 1 and {short.MaxValue} inclusive.");
-        }
-    }
+    public string Name { get; }
+    // Path relative to the root component. Size: 0 - 32767 bytes.
+    public string Path { get; }
 
     private protected Component(bool isHidden, string name, string path)
     {
         IsHidden = isHidden;
+        if (name == null)
+            throw new ArgumentNullException("Component.Name cannot be null.");
+        var length = Encoding.UTF8.GetBytes(name).Length;
+        if (length == 0 || length > byte.MaxValue)
+            throw new ArgumentOutOfRangeException($"Component.Name length must be between 1 and {byte.MaxValue} inclusive.");
         Name = name;
+        if (path == null)
+            throw new ArgumentNullException("Component.Path cannot be null.");
+        length = Encoding.UTF8.GetBytes(path).Length;
+        if (length > short.MaxValue)
+            throw new ArgumentOutOfRangeException($"Component.Path length must be less than or equal to {short.MaxValue}.");
         Path = path;
     }
     /*
@@ -76,4 +66,6 @@ public class Component
         GetBinaryRep(data);
         File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}\\{name}.ctree", data.ToArray());
     }
+    // Override this method in a derived class to update CAD models.
+    public virtual void Update() { return; }
 }

@@ -19,7 +19,11 @@ public class ComponentProperties
         Properties = properties;
         UpdatedComponent = component;
     }
+    /*
+        Gets the binary representation of the component properties instance.
 
+        data: The binary representation.
+    */
     internal void GetBinaryRep(List<byte> data)
     {
         UpdatedComponent.GetBinaryRep(data, Properties);

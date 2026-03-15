@@ -1,0 +1,70 @@
+import * from "Part.js";
+import * from "Assembly.js";
+
+export class Component
+{
+    // Identifier for geometry data. -1 indicates that this component is an assembly.
+    id;
+    // Indicates if this component is hidden.
+    isHidden;
+    // Name in the feature tree.
+    name;
+    // Visible components in this component and any child components.
+    static visibleComponents;
+    // View of data.
+    static dataView;
+    // Pointer within the data view buffer.
+    static index;
+
+    constructor()
+    {
+        this.setID();
+        this.setHiddenState();
+        this.setName();
+    }
+    // Sets the ID using the data view.
+    setID()
+    {
+        this.id = Component.dataView.getInt16(Component.index, true);
+        Component.index += 2;
+    }
+    // Sets the hidden state using the data view.
+    setHiddenState()
+    {
+        this.isHidden = Component.dataView.getUint8(Component.index, true) == 1;
+        Component.index += 1;
+    }
+    // Sets the name using the data view.
+    setName()
+    {
+        const length = Component.dataView.getUint8(Component.index, true);
+        Component.index++;
+        const nameData = new Int8Array(Component.dataView.buffer, Component.index, length);
+        Component.index += length;
+        const decoder = new TextDecoder();
+        this.name = decoder.decode(nameData);
+    }
+    // Creates a component using the data view.
+    static createComponent()
+    {
+        let component;
+        const id = Component.dataView.getInt16(Component.index, true);
+        if (id == -1)
+            component = new Assembly();
+        else
+            component = new Part();
+        return component;
+    }
+    /*
+        Returns the root component that is represented by the request body.
+
+        body: The body to parse.
+    */
+    static parse(body)
+    {
+        const binaryData = new Uint8Array(body);
+        Component.dataView = new DataView(binaryData.buffer);
+        Component.index = 0;
+        return Component.createComponent();
+    }
+}
