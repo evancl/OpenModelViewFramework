@@ -49,26 +49,41 @@ public class ComponentData
         Gets the binary representation of the component data instance.
 
         data: The binary representation.
+        useCompressedFormat: Indicates if the compressed format should be used.
     */
-    void GetBinaryRep(List<byte> data)
+    void GetBinaryRep(List<byte> data, bool useCompressedFormat)
     {
-        if (Properties == null)
-            data.AddRange(GetBytes((short)0));
+        if (useCompressedFormat)
+            data.Add((byte)1);
         else
         {
-            data.AddRange(GetBytes((short)Properties.Length));
-            foreach (var property in Properties)
-                property.GetBinaryRep(data);
+            data.Add((byte)0);
+            if (Properties == null)
+                data.AddRange(GetBytes((short)0));
+            else
+            {
+                data.AddRange(GetBytes((short)Properties.Length));
+                foreach (var property in Properties)
+                    property.GetBinaryRep(data);
+            }
         }
         if (IDs == null)
             data.AddRange(GetBytes((short)0));
         else
         {
             data.AddRange(GetBytes((short)IDs.Length));
-            foreach (var id in IDs)
+            if (useCompressedFormat)
             {
-                data.AddRange(GetBytes(id));
-                GetGeometryBinaryRep(data, id);
+                foreach (var id in IDs)
+                    GetGeometryBinaryRep(data, id);
+            }
+            else
+            {
+                foreach (var id in IDs)
+                {
+                    data.AddRange(GetBytes(id));
+                    GetGeometryBinaryRep(data, id);
+                }
             }
         }
     }
@@ -100,22 +115,27 @@ public class ComponentData
             index += 2;
         }
     }
-    // Gets a binary representation of a cdata file.
-    public List<byte> GetFile()
+    /*
+        Gets a binary representation of a cdata file.
+
+        useCompressedFormat: Indicates if the compressed format should be used.
+    */
+    public List<byte> GetFile(bool useCompressedFormat)
     {
         List<byte> data = new();
-        GetBinaryRep(data);
+        GetBinaryRep(data, useCompressedFormat);
         return data;
     }
     /*
         Creates a cdata file in the current working directory.
 
         name: The file name to use.
+        useCompressedFormat: Indicates if the compressed format should be used.
     */
-    public void CreateFile(string name)
+    public void CreateFile(string name, bool useCompressedFormat)
     {
         List<byte> data = new();
-        GetBinaryRep(data);
+        GetBinaryRep(data, useCompressedFormat);
         File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}\\{name}.cdata", data.ToArray());
     }
 }
