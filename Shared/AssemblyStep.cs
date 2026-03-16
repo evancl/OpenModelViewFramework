@@ -1,3 +1,6 @@
+using System.Text;
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class AssemblyStep
@@ -5,7 +8,11 @@ public class AssemblyStep
     // Name of the assembly step.
     string Name
     {
-        get; set
+        get
+        {
+            return Name;
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("AssemblyStep.Name cannot be null.");
@@ -17,7 +24,11 @@ public class AssemblyStep
     // Explode line list.
     Line[] Lines
     {
-        get; set
+        get
+        {
+            return Lines;    
+        }
+        set
         {
             if (value != null && (value.Length == 0 || value.Length > short.MaxValue))
                 throw new ArgumentOutOfRangeException($"AssemblyStep.Lines length must be between 1 and {short.MaxValue} inclusive.");
@@ -26,7 +37,11 @@ public class AssemblyStep
     // Components in the assembly step.
     List<AssemblyStepComponent> Components
     {
-        get; set
+        get
+        {
+            return Components;
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("AssemblyStep.Components cannot be null.");
@@ -52,10 +67,10 @@ public class AssemblyStep
         data.Add((byte)bytes.Length);
         data.AddRange(bytes);
         if (Lines == null)
-            data.Add(GetBytes((short)0));
+            data.AddRange(GetBytes((short)0));
         else
         {
-            data.Add((short)Lines.Length);
+            data.AddRange(GetBytes((short)Lines.Length));
             foreach (var line in Lines)
                 line.GetBinaryRep(data);
         }

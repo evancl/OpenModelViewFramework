@@ -1,3 +1,5 @@
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class Part : Component
@@ -5,7 +7,11 @@ public class Part : Component
     // Identifier for geometry data. Size: 2 bytes.
     protected override short ID
     {
-        get; set
+        get
+        {
+            return ID;
+        }
+        set
         {
             if (value < 0 || value > short.MaxValue)
                 throw new ArgumentOutOfRangeException($"Part.ID must be between 0 and {short.MaxValue} inclusive.");
@@ -21,7 +27,11 @@ public class Part : Component
     */
     protected byte[] Properties
     {
-        get; set
+        get
+        {
+            return Properties;
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("Part.Properties cannot be null.");
@@ -31,7 +41,7 @@ public class Part : Component
     }
     /*
         Data that transforms this part relative to the global coordinate system. Size: 48 bytes.
-            
+        
         r0c0, r0c1, r0c2,
         r1c0, r1c1, r1c2,
         r2c0, r2c1, r2c2,
@@ -39,7 +49,11 @@ public class Part : Component
     */
     protected float[] Transform
     {
-        get; set
+        get
+        {
+            return Transform;
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("Part.Transform cannot be null.");

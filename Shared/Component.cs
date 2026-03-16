@@ -1,9 +1,12 @@
+using System.Text;
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class Component
 {
     // Identifier for geometry data. -1 indicates that this component is an assembly. Size: 2 bytes.
-    protected abstract short ID;
+    protected virtual short ID { get; set; }
     // Indicates if this component is hidden. Size: 1 byte.
     protected bool IsHidden;
     // Name in the model's feature tree. Size: 1 - 255 bytes.

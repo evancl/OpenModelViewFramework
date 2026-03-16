@@ -1,3 +1,5 @@
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class Point
@@ -5,7 +7,11 @@ public class Point
     // X coordinate.
     float X
     {
-        get; set
+        get
+        {
+            return X;    
+        }
+        set
         {
             if (value == float.NegativeInfinity || value == float.PositiveInfinity)
                 throw new ArgumentOutOfRangeException("Point.X must be between negative infinity and positive infinity exclusive.");
@@ -14,7 +20,11 @@ public class Point
     // Y coordinate.
     float Y
     {
-        get; set
+        get
+        {
+            return Y;
+        }
+        set
         {
             if (value == float.NegativeInfinity || value == float.PositiveInfinity)
                 throw new ArgumentOutOfRangeException("Point.Y must be between negative infinity and positive infinity exclusive.");
@@ -23,7 +33,11 @@ public class Point
     // Z coordinate.
     float Z
     {
-        get; set
+        get
+        {
+            return Z;
+        }
+        set
         {
             if (value == float.NegativeInfinity || value == float.PositiveInfinity)
                 throw new ArgumentOutOfRangeException("Point.Z must be between negative infinity and positive infinity exclusive.");

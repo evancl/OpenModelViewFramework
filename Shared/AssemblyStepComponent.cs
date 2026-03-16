@@ -1,3 +1,6 @@
+using System.Text;
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class AssemblyStepComponent
@@ -5,7 +8,11 @@ public class AssemblyStepComponent
     // Name of the component.
     string Name
     {
-        get; set
+        get
+        {
+            return Name;
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("AssemblyStepComponent.Name cannot be null.");
@@ -16,12 +23,16 @@ public class AssemblyStepComponent
     }
     /*
         Transform data.
-        
+    
         Δx, Δy, Δz
     */
     float[] Transform
     {
-        get; set
+        get
+        {
+            return Transform;    
+        }
+        set
         {
             if (value != null)
             {

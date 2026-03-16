@@ -1,3 +1,5 @@
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class Assembly : Component
@@ -7,7 +9,11 @@ public class Assembly : Component
     // Child components.
     Component[] Children
     {
-        get; set
+        get
+        {
+            return Children;
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("Assembly.Children cannot be null.");

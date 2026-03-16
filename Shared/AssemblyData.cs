@@ -1,3 +1,5 @@
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class AssemblyData
@@ -5,7 +7,11 @@ public class AssemblyData
     // Assembly steps.
     public AssemblyStep[] Steps
     {
-        get; set
+        get
+        {
+            return Steps;   
+        }
+        set
         {
             if (value == null)
                 throw new ArgumentNullException("AssemblyStep.Steps cannot be null.");

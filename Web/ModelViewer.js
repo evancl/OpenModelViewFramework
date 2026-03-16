@@ -6,13 +6,15 @@ export class ModelViewer
         Class constructor.
 
         root: The top level component.
+        assemblyData: The assembly data.
         models: The array of part data.
         camera: The camera to use.
         light: The light to use.
     */
-    constructor(root, models, camera, light)
+    constructor(root, assemblyData, models, camera, light)
     {
         this.root = root;
+        this.assemblyData = assemblyData;
         this.models = models;
         this.camera = camera;
         this.light = light;
@@ -57,8 +59,8 @@ export class ModelViewer
         this.ctx.uniform3fv(this.specularLightColor, this.light.specular);
         this.ctx.uniform3fv(this.specularLightPosition, this.light.specularPosition);
         this.ctx.uniformMatrix4fv(this.view, false, this.camera.transform);
-        this.createBuffers(this.root, false);
         this.needsRebuild = false;
+        this.createBuffers(this.root, false);
         this.render();
         let node = this.hiddenComponents.head;
         while (node != null)
@@ -138,7 +140,7 @@ export class ModelViewer
         }
     `;
     /*
-        Create a buffer for the specified component and every child component that has a model. Components are added to
+        Creates a buffer for the specified component or every child component that has a model. Components are added to
         the model viewer's hidden and visible component lists.
 
         component: The component to use.
@@ -309,41 +311,27 @@ export class ModelViewer
             );
             this.ctx.uniform4fv(this.properties, node.value.properties);
             // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
-            let count = this.models[node.value.id].length / 6;
+            const count = this.models[node.value.id].length / 6;
             this.ctx.drawArrays(this.ctx.TRIANGLES, 0, count);
             node = node.next;
         }
     }
     /*
-        Parses the component data file.
+        Parses the component data file and updates the existing components and models.
 
         body: The body to parse as a component data file.
     */
-    parseComponentDataFile(body)
+    update(body)
     {
         const data = new Uint8Array(body);
         const view = new DataView(data.buffer);
         let index = 0;
-        const modelsCount = view.getInt16(index, true);
+        let count = view.getInt16(index, true);
         index += 2;
-        const propsCount = view.getInt16(index, true);
-        index += 2;
-        if (modelsCount > 0)
-        {
-            for (let i = 0; i < modelsCount; i++)
-            {
-                const id = view.getInt16(index, true);
-                index += 2;
-                const size = view.getInt32(index, true);
-                index += 4;
-                this.models[id] = new Float32Array(data.buffer.slice(index, index + size));
-                index += size;
-            }
-        }
-        if (propsCount > 0)
+        if (count > 0)
         {
             const decoder = new TextDecoder();
-            for (let i = 0; i < propsCount; i++)
+            for (let i = 0; i < count; i++)
             {
                 const length = view.getUint16(index, true);
                 index += 2;
@@ -357,6 +345,28 @@ export class ModelViewer
                     index = this.setProperties(this.root.getChild(path), view, index);
                 }
             }
+            if (this.needsRebuild)
+            {
+                this.visibleComponents = this.root.getVisibleComponents();
+                this.needsRebuild = false;
+            }
+        }
+        count = view.getInt16(index, true);
+        index += 2;
+        if (count > 0)
+        {
+            const ids = new Array();
+            for (let i = 0; i < count; i++)
+            {
+                const id = view.getInt16(index, true);
+                index += 2;
+                const size = view.getInt32(index, true);
+                index += 4;
+                this.models[id] = new Float32Array(data.buffer.slice(index, index + size));
+                index += size;
+                ids.push(id);
+            }
+            this.root.bind(ids, this);
         }
     }
     /*
@@ -372,21 +382,15 @@ export class ModelViewer
         index++;
         if ((updatedProps & 1) != 0)
         {
-            const hiddenState = view.getUint8(index, true) == 1
+            const isHidden = view.getUint8(index, true) == 1;
             index++;
-            this.needsRebuild ||= component.isHidden != hiddenState;
-            component.isHidden = hiddenState;
+            this.needsRebuild ||= component.isHidden != isHidden;
+            component.isHidden = isHidden;
         }
         if ((updatedProps & 1 << 1) != 0)
         {
             component.id = view.getInt16(index, true);
             index += 2;
-            this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, component.vertexBuffer);
-            this.ctx.bufferData(
-                this.ctx.ARRAY_BUFFER,
-                this.models[component.id],
-                this.ctx.STATIC_DRAW
-            );
         }
         if ((updatedProps & 1 << 2) != 0)
         {

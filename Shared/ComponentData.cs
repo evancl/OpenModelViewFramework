@@ -1,3 +1,5 @@
+using static System.BitConverter;
+
 namespace OpenModelViewFramework;
 
 public class ComponentData
@@ -5,7 +7,11 @@ public class ComponentData
     // Part IDs.
     public short[] IDs
     {
-        get; set
+        get
+        {
+            return IDs;
+        }
+        set
         {
             if (value != null && (value.Length == 0 || value.Length > short.MaxValue))
                 throw new ArgumentOutOfRangeException($"ComponentData.IDs length must be between 1 and {short.MaxValue} inclusive.");
@@ -14,7 +20,11 @@ public class ComponentData
     // Component properties to update.
     public ComponentProperties[] Properties
     {
-        get; set
+        get
+        {
+            return Properties;
+        }
+        set
         {
             if (value != null && (value.Length == 0 || value.Length > short.MaxValue))
                 throw new ArgumentOutOfRangeException($"ComponentData.Properties length must be between 1 and {short.MaxValue} inclusive.");
@@ -32,11 +42,8 @@ public class ComponentData
             SearchOption.AllDirectories
         );
         if (Files.Length == 0 || Files.Length > short.MaxValue)
-            throw new AppException($"ComponentData.ComponentData error: STL file count must be between 1 and {short.MaxValue} inclusive.");
+            throw new Exception($"ComponentData.ComponentData error: STL file count must be between 1 and {short.MaxValue} inclusive.");
         Array.Sort(Files);
-        IDs = new short[Files.Length];
-        for (var i = 0; i < Files.Length; i++)
-            IDs[i] = i;
     }
     /*
         Gets the binary representation of the component data instance.
@@ -45,6 +52,14 @@ public class ComponentData
     */
     void GetBinaryRep(List<byte> data)
     {
+        if (Properties == null)
+            data.AddRange(GetBytes((short)0));
+        else
+        {
+            data.AddRange(GetBytes((short)Properties.Length));
+            foreach (var property in Properties)
+                property.GetBinaryRep(data);
+        }
         if (IDs == null)
             data.AddRange(GetBytes((short)0));
         else
@@ -55,14 +70,6 @@ public class ComponentData
                 data.AddRange(GetBytes(id));
                 GetGeometryBinaryRep(data, id);
             }
-        }
-        if (Properties == null)
-            data.AddRange(GetBytes((short)0));
-        else
-        {
-            data.AddRange(GetBytes((short)Properties.Length));
-            foreach (var property in Properties)
-                property.GetBinaryRep(data);
         }
     }
     /*
@@ -86,8 +93,8 @@ public class ComponentData
             {
                 data.AddRange(normal);
                 var span = new ReadOnlySpan<byte>(bytes, index, 12);
-                data += 12;
-                file.AddRange(span);
+                index += 12;
+                data.AddRange(span);
             }
             // Skip over unused bytes.
             index += 2;

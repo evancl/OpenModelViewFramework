@@ -37,7 +37,7 @@ export class Part extends Component
         this.properties = vec4.create();
         for (let i = 0; i < 4; i++)
         {
-            this.properties[i] = Component.#dataView.getUint8(Component.index, true) / 255.0;
+            this.properties[i] = Component.view.getUint8(Component.index, true) / 255.0;
             Component.index++;
         }
     }
@@ -45,22 +45,40 @@ export class Part extends Component
     setTransform()
     {
         this.transform = mat4.create();
-        this.transform[0] = Component.dataView.getFloat32(Component.index, true);
-        this.transform[1] = Component.dataView.getFloat32(Component.index + 4 * 3, true);
-        this.transform[2] = Component.dataView.getFloat32(Component.index + 4 * 6, true);
+        this.transform[0] = Component.view.getFloat32(Component.index, true);
+        this.transform[1] = Component.view.getFloat32(Component.index + 4 * 3, true);
+        this.transform[2] = Component.view.getFloat32(Component.index + 4 * 6, true);
         this.transform[3] = 0;
-        this.transform[4] = Component.dataView.getFloat32(Component.index + 4, true);
-        this.transform[5] = Component.dataView.getFloat32(Component.index + 4 * 4, true);
-        this.transform[6] = Component.dataView.getFloat32(Component.index + 4 * 7, true);
+        this.transform[4] = Component.view.getFloat32(Component.index + 4, true);
+        this.transform[5] = Component.view.getFloat32(Component.index + 4 * 4, true);
+        this.transform[6] = Component.view.getFloat32(Component.index + 4 * 7, true);
         this.transform[7] = 0;
-        this.transform[8] = Component.dataView.getFloat32(Component.index + 4 * 2, true);
-        this.transform[9] = Component.dataView.getFloat32(Component.index + 4 * 5, true);
-        this.transform[10] = Component.dataView.getFloat32(Component.index + 4 * 8, true);
+        this.transform[8] = Component.view.getFloat32(Component.index + 4 * 2, true);
+        this.transform[9] = Component.view.getFloat32(Component.index + 4 * 5, true);
+        this.transform[10] = Component.view.getFloat32(Component.index + 4 * 8, true);
         this.transform[11] = 0;
-        this.transform[12] = Component.dataView.getFloat32(Component.index + 4 * 9, true);
-        this.transform[13] = Component.dataView.getFloat32(Component.index + 4 * 10, true);
-        this.transform[14] = Component.dataView.getFloat32(Component.index + 4 * 11, true);
+        this.transform[12] = Component.view.getFloat32(Component.index + 4 * 9, true);
+        this.transform[13] = Component.view.getFloat32(Component.index + 4 * 10, true);
+        this.transform[14] = Component.view.getFloat32(Component.index + 4 * 11, true);
         this.transform[15] = 1;
         Component.index += 48;
+    }
+    /*
+        Binds the components with the given ids to the updated models in the given viewer.
+
+        ids: The IDs to use.
+        viewer: The model viewer to use.
+    */
+    bind(ids, viewer)
+    {
+        if (ids.includes(this.id))
+        {
+            viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.vertexBuffer);
+            viewer.ctx.bufferData(
+                viewer.ctx.ARRAY_BUFFER,
+                viewer.models[this.id],
+                viewer.ctx.STATIC_DRAW
+            );
+        }
     }
 }

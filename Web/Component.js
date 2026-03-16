@@ -12,7 +12,7 @@ export class Component
     // Visible components in this component and any child components.
     static visibleComponents;
     // View of data.
-    static dataView;
+    static view;
     // Pointer within the data view buffer.
     static index;
 
@@ -25,21 +25,21 @@ export class Component
     // Sets the ID using the data view.
     setID()
     {
-        this.id = Component.dataView.getInt16(Component.index, true);
+        this.id = Component.view.getInt16(Component.index, true);
         Component.index += 2;
     }
     // Sets the hidden state using the data view.
     setHiddenState()
     {
-        this.isHidden = Component.dataView.getUint8(Component.index, true) == 1;
+        this.isHidden = Component.view.getUint8(Component.index, true) == 1;
         Component.index += 1;
     }
     // Sets the name using the data view.
     setName()
     {
-        const length = Component.dataView.getUint8(Component.index, true);
+        const length = Component.view.getUint8(Component.index, true);
         Component.index++;
-        const nameData = new Int8Array(Component.dataView.buffer, Component.index, length);
+        const nameData = new Int8Array(Component.view.buffer, Component.index, length);
         Component.index += length;
         const decoder = new TextDecoder();
         this.name = decoder.decode(nameData);
@@ -48,7 +48,7 @@ export class Component
     static createComponent()
     {
         let component;
-        const id = Component.dataView.getInt16(Component.index, true);
+        const id = Component.view.getInt16(Component.index, true);
         if (id == -1)
             component = new Assembly();
         else
@@ -58,12 +58,12 @@ export class Component
     /*
         Returns the root component that is represented by the request body.
 
-        body: The body to parse.
+        body: The body to parse as a component tree file.
     */
     static parse(body)
     {
-        const binaryData = new Uint8Array(body);
-        Component.dataView = new DataView(binaryData.buffer);
+        const data = new Uint8Array(body);
+        Component.view = new DataView(data.buffer);
         Component.index = 0;
         return Component.createComponent();
     }

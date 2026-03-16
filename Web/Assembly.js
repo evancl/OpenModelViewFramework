@@ -13,7 +13,7 @@ export class Assembly extends Component
     /*
         Gets the child component that exists at the given path.
 
-        path: The path of the child component relative to this component.
+        path: The path of the child component relative to this assembly.
     */
     getChild(path)
     {
@@ -38,12 +38,12 @@ export class Assembly extends Component
     // Sets the children using the data view.
     setChildren()
     {
-        this.children = new Array(Component.dataView.getInt16(Component.index, true));
+        this.children = new Array(Component.view.getInt16(Component.index, true));
         Component.index += 2;
         for (let i = 0; i < this.children.length; i++)
             this.children[i] = Component.createComponent();
     }
-    // Gets the visible components in this component.
+    // Gets the visible components in this assembly.
     getVisibleComponents()
     {
         Component.visibleComponents = new LinkedList();
@@ -62,5 +62,16 @@ export class Assembly extends Component
             for (let i = 0; i < this.children.length; i++)
                 this.children[i].setVisibleComponents();
         }
+    }
+    /*
+        Binds the components with the given ids to the updated models in the given viewer.
+
+        ids: The IDs to use.
+        viewer: The model viewer to use.
+    */
+    bind(ids, viewer)
+    {
+        for (let i = 0; i < this.children.length; i++)
+            this.children[i].bind(ids, viewer);
     }
 }

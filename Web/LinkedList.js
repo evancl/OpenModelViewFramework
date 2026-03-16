@@ -4,7 +4,9 @@ export class LinkedList
 {
 	constructor()
 	{
+		// Head node.
 		this.head = null;
+		// Tail node.
 		this.tail = null;
 	}
 	/*
@@ -28,13 +30,24 @@ export class LinkedList
 		}
 	}
 	/*
-		Removes the node from the list.
+		Removes the node with the given value from the list.
 
-		node: The node to remove.
+		value: The value that indicates which node to remove.
 	*/
-	remove(node)
+	remove(value)
 	{
-		if (this.head == node && this.tail == node)
+		if (this.head == null)
+			return;
+		let node = this.head;
+		while (node != null)
+		{
+			if (node.value = value)
+				break;
+			node = node.next;
+		}
+		if (node == null)
+			return;
+		else if (this.head == node && this.tail == node)
 		{
 			this.head = null;
 			this.tail = null;

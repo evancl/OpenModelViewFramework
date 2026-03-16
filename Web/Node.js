@@ -7,8 +7,11 @@ export class Node
 	*/
 	constructor(value)
 	{
+		// Next node.
 		this.next = null;
+		// Previous node.
 		this.previous = null;
+		// Node value.
 		this.value = value;
 	}
 }

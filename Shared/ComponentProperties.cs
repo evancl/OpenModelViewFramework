@@ -5,7 +5,11 @@ public class ComponentProperties
     // Bit field that indicates which properties in the component have been updated. Size: 1 byte.
     byte Properties
     {
-        get; set
+        get
+        {
+            return Properties;    
+        }
+        set
         {
             if (Properties == 0 || Properties > 15)
                 throw new ArgumentOutOfRangeException("ComponentProperties.Properties must be between 1 and 15 inclusive.");
