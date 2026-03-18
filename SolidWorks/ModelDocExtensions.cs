@@ -1,6 +1,6 @@
 namespace OpenModelViewFramework;
 
-public static class ModelDoc2
+public static class ModelDoc2Extensions
 {
     public static List<Line> GetExplodeLines(this ModelDoc2 document, string name)
     {

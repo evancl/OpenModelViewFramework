@@ -1,6 +1,6 @@
 namespace OpenModelViewFramework;
 
-public static class TreeContolItem
+public static class TreeContolItemExtensions
 {
     public static List<AssemblyStepComponent> GetAssemblyComponents(this TreeContolItem parent, ModelDoc2 document, bool isExploded)
     {

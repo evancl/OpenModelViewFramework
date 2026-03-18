@@ -32,7 +32,7 @@ export class Component
     setHiddenState()
     {
         this.isHidden = Component.view.getUint8(Component.index, true) == 1;
-        Component.index += 1;
+        Component.index++;
     }
     // Sets the name using the data view.
     setName()

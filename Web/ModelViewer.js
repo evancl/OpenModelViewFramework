@@ -5,17 +5,17 @@ export class ModelViewer
     /*
         Class constructor.
 
-        root: The top level component.
+        root: The root component.
         assemblyData: The assembly data.
-        models: The array of part data.
+        componentData: The component data.
         camera: The camera to use.
         light: The light to use.
     */
-    constructor(root, assemblyData, models, camera, light)
+    constructor(root, assemblyData, componentData, camera, light)
     {
         this.root = root;
         this.assemblyData = assemblyData;
-        this.models = models;
+        this.models = componentData.models;
         this.camera = camera;
         this.light = light;
         this.hiddenComponents = new LinkedList();
@@ -39,7 +39,7 @@ export class ModelViewer
         this.ctx.clearColor(0, 0, 0, 0);
         this.ctx.enable(this.ctx.DEPTH_TEST);
         this.ctx.depthFunc(this.ctx.LEQUAL);
-        this.shaderProgram = this.#configureShaders();
+        this.shaderProgram = this.configureShaders();
         this.ctx.useProgram(this.shaderProgram);
         this.vertexNormal = this.ctx.getAttribLocation(this.shaderProgram, "vertexNormal");
         this.vertexPosition = this.ctx.getAttribLocation(this.shaderProgram, "vertexPosition");
@@ -51,6 +51,7 @@ export class ModelViewer
         this.specularLightPosition = this.ctx.getUniformLocation(this.shaderProgram, "specularLightPosition");
         this.model = this.ctx.getUniformLocation(this.shaderProgram, "modelMatrix");
         this.view = this.ctx.getUniformLocation(this.shaderProgram, "viewMatrix");
+        this.projection = this.ctx.getUniformLocation(this.shaderProgram, "projectionMatrix");
         this.properties = this.ctx.getUniformLocation(this.shaderProgram, "properties");
         this.ctx.uniform3fv(this.cameraPosition, this.camera.position);
         this.ctx.uniform3fv(this.ambientLight, this.light.ambient);
@@ -58,8 +59,12 @@ export class ModelViewer
         this.ctx.uniform3fv(this.diffuseLightVector, this.light.diffuseVector);
         this.ctx.uniform3fv(this.specularLightColor, this.light.specular);
         this.ctx.uniform3fv(this.specularLightPosition, this.light.specularPosition);
-        this.ctx.uniformMatrix4fv(this.view, false, this.camera.transform);
+        this.ctx.uniformMatrix4fv(this.view, false, this.camera.view);
+        this.ctx.uniformMatrix4fv(this.projection, false, this.camera.projection);
+        // This is the identity matrix.
+        this.rootTransform = mat4.create();
         this.needsRebuild = false;
+        this.isExploded = false;
         this.createBuffers(this.root, false);
         this.render();
         let node = this.hiddenComponents.head;
@@ -95,6 +100,57 @@ export class ModelViewer
             this.ctx.enableVertexAttribArray(this.vertexPosition);
             node = node.next;
         }
+        if (this.assemblyData == null)
+            this.assemblyStep = 0;
+        else
+        {
+            this.assemblyStep = assemblyData.steps.length - 1;
+            for (let i = 0; i < this.assemblyData.steps.length; i++)
+            {
+                for (let j = 0; j < this.assemblyData.steps[i].components.length; j++)
+                {
+                    const component = this.assemblyData.steps[i].components[j];
+                    if (component.transform != null)
+                        this.root.getChild(component.name).setTransform(component.transform);
+                }
+                if (this.assemblyData.steps[i].lines != null)
+                {
+                    for (let j = 0; j < this.assemblyData.steps[i].lines.length; j++)
+                    {
+                        const line = this.assemblyData.steps[i].lines[j];
+                        line.vertexArray = this.ctx.createVertexArray();
+                        this.ctx.bindVertexArray(line.vertexArray);
+                        line.vertexBuffer = this.ctx.createBuffer();
+                        this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, line.vertexBuffer);
+                        this.ctx.bufferData(
+                            this.ctx.ARRAY_BUFFER,
+                            line.model,
+                            this.ctx.STATIC_DRAW
+                        );
+                        // Normal attribute.
+                        this.ctx.vertexAttribPointer(
+                            this.vertexNormal,
+                            3,
+                            this.ctx.FLOAT,
+                            false,
+                            24,
+                            0
+                        );
+                        this.ctx.enableVertexAttribArray(this.vertexNormal);
+                        // Position attribute.
+                        this.ctx.vertexAttribPointer(
+                            this.vertexPosition,
+                            3,
+                            this.ctx.FLOAT,
+                            false,
+                            24,
+                            12
+                        );
+                        this.ctx.enableVertexAttribArray(this.vertexPosition);
+                    }
+                }
+            }
+        }
     }
     // Vertex shader source code.
     static vertexShaderSource =
@@ -103,6 +159,7 @@ export class ModelViewer
         attribute vec3 vertexNormal;
         uniform mat4 modelMatrix;
         uniform mat4 viewMatrix;
+        uniform mat4 projectionMatrix;
         uniform vec3 cameraPosition;
         uniform vec3 ambientLight;
         uniform vec3 diffuseLightColor;
@@ -115,7 +172,7 @@ export class ModelViewer
 
         void main()
         {
-            gl_Position = viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
             vec3 viewNormal = vec3(viewMatrix * modelMatrix * vec4(vertexNormal, 0.0));
             vec3 diffuseLight = diffuseLightColor * max(dot(viewNormal, diffuseLightVector), 0.0);
             vec3 v0 = normalize(specularLightPosition - gl_Position.xyz);
@@ -199,14 +256,14 @@ export class ModelViewer
         const vertexShader = this.loadShader(this.ctx.VERTEX_SHADER, ModelViewer.vertexShaderSource);
         if (!this.ctx.getShaderParameter(vertexShader, this.ctx.COMPILE_STATUS))
         {
-            const message = `ModelViewer.linkShaders error: Failed to load shader. Log: ${this.ctx.getShaderInfoLog(vertexShader)}`;
+            const message = `ModelViewer.configureShaders error: Failed to load shader. Log: ${this.ctx.getShaderInfoLog(vertexShader)}`;
             this.ctx.deleteShader(vertexShader);
             throw new Error(message);
         }
         const fragmentShader = this.loadShader(this.ctx.FRAGMENT_SHADER, ModelViewer.fragmentShaderSource);
         if (!this.ctx.getShaderParameter(fragmentShader, this.ctx.COMPILE_STATUS))
         {
-            const message = `ModelViewer.linkShaders error: Failed to load shader. Log: ${this.ctx.getShaderInfoLog(fragmentShader)}`;
+            const message = `ModelViewer.configureShaders error: Failed to load shader. Log: ${this.ctx.getShaderInfoLog(fragmentShader)}`;
             this.ctx.deleteShader(vertexShader);
             this.ctx.deleteShader(fragmentShader);
             throw new Error(message);
@@ -219,7 +276,7 @@ export class ModelViewer
         this.ctx.deleteShader(vertexShader);
         this.ctx.deleteShader(fragmentShader);
         if (!this.ctx.getProgramParameter(shaderProgram, this.ctx.LINK_STATUS))
-            throw new Error(`ModelViewer.linkShaders error: Failed to initialize shader program. Log: ${this.ctx.getProgramInfoLog(shaderProgram)}`);
+            throw new Error(`ModelViewer.configureShaders error: Failed to initialize shader program. Log: ${this.ctx.getProgramInfoLog(shaderProgram)}`);
         return shaderProgram;
     }
     /*
@@ -254,7 +311,7 @@ export class ModelViewer
         self.ctx.uniformMatrix4fv(
             self.view,
             false,
-            self.camera.transform
+            self.camera.view
         );
         self.render();
     }
@@ -288,13 +345,79 @@ export class ModelViewer
     onZoom(self, event)
     {
         event.preventDefault();
-        self.camera.zoomCamera(event.deltaY);
+        self.camera.zoomCamera(self, event);
         self.ctx.uniformMatrix4fv(
-            self.view,
+            self.projection,
             false,
-            self.camera.transform
+            self.camera.projection
         );
         self.render();
+    }
+    /*
+        Shows the components in and optionally before the assembly step specified by index.
+
+        index: The assembly step to show.
+        showPrevious: Indicates if the components in previous steps should be shown.
+    */
+    showAssemblyStep(index, showPrevious)
+    {
+        if (this.assemblyData == null)
+            throw new Error("ModelViewer.showAssemblyStep error: Assembly data is null.");
+        else if (!Number.isInteger(index))
+            throw new Error("ModelViewer.showAssemblyStep error: Index is not an integer.");
+        else if (index < 0 || index >= this.assemblyData.steps.length)
+            throw new Error(`ModelViewer.showAssemblyStep error: Index must be greater than or equal to 0 and less than ${this.assemblyData.steps.length}.`);
+        else if (this.isExploded)
+            this.collapse();
+        this.root.hideChildren();
+        this.assemblyStep = index;
+        if (showPrevious)
+        {
+            for (let i = 0; i <= this.assemblyStep; i++)
+            {
+                for (let j = 0; j < this.assemblyData.steps[i].components.length; j++)
+                    this.root.getChild(this.assemblyData.steps[i].components[j].name).isHidden = false;
+            }
+        }
+        else
+        {
+            for (let i = 0; i < this.assemblyData.steps[this.assemblyStep].components.length; i++)
+                this.root.getChild(this.assemblyData.steps[this.assemblyStep].components[i].name).isHidden = false;
+        }
+        this.visibleComponents = this.root.getVisibleComponents();
+        this.render();
+    }
+    // Places the model in an exploded state.
+    explode()
+    {
+        if (this.assemblyData == null)
+            throw new Error("ModelViewer.explode error: Assembly data is null.");
+        else if (this.isExploded)
+            return;
+        const components = this.assemblyData.steps[this.assemblyStep].components;
+        for (let i = 0; i < components.length; i++)
+        {
+            if (components[i].transform != null)
+                this.root.getChild(components[i].name).explode();
+        }
+        this.isExploded = true;
+        this.render();
+    }
+    // Places the model in a collapsed state.
+    collapse()
+    {
+        if (this.assemblyData == null)
+            throw new Error("ModelViewer.collapse error: Assembly data is null.");
+        else if (!this.isExploded)
+            return;
+        const components = this.assemblyData.steps[this.assemblyStep].components;
+        for (let i = 0; i < components.length; i++)
+        {
+            if (components[i].transform != null)
+                this.root.getChild(components[i].name).collapse();
+        }
+        this.isExploded = false;
+        this.render();
     }
     // Renders the model.
     render()
@@ -311,9 +434,24 @@ export class ModelViewer
             );
             this.ctx.uniform4fv(this.properties, node.value.properties);
             // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
-            const count = this.models[node.value.id].length / 6;
-            this.ctx.drawArrays(this.ctx.TRIANGLES, 0, count);
+            this.ctx.drawArrays(this.ctx.TRIANGLES, 0, this.models[node.value.id].length / 6);
             node = node.next;
+        }
+        if (this.isExploded)
+        {
+            for (let i = 0; i < this.assemblyData.steps[this.assemblyStep].lines.length; i++)
+            {
+                const line = this.assemblyData.steps[this.assemblyStep].lines[i];
+                this.ctx.bindVertexArray(line.vertexArray);
+                this.ctx.uniform4fv(
+                    this.model,
+                    false,
+                    this.rootTransform
+                );
+                this.ctx.uniform4fv(this.properties, this.assemblyData.properties);
+                // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
+                this.ctx.drawArrays(this.ctx.TRIANGLES, 0, line.model.length / 6);
+            }
         }
     }
     /*

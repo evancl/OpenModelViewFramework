@@ -5,25 +5,22 @@ export class Camera
 
         zoomSensitivity: A floating point value that indicates the zoom sensitivity.
         rotateSensitivity: A floating point value that indicates the rotate sensitivity.
-        nearPlane: The near plane.
-        maximumRadius: The maximum distance of model geometry from the model origin.
         position: The initial camera position.
+        left: The left bound of the frustum.
+        right: The right bound of the frustum.
+        bottom: The bottom bound of the frustum.
+        top: The top bound of the frustum.
+        near: The near bound of the frustum.
+        far: The far bound of the frustum.
     */
-    constructor(zoomSensitivity, rotateSensitivity, nearPlane, maximumRadius, position)
+    constructor(zoomSensitivity, rotateSensitivity, scale, position, left, right, top, bottom, near, far)
     {
         // Camera zoom sensitivity.
         this.zoomSensitivity = zoomSensitivity;
         // Camera rotate sensitivity.
         this.rotateSensitivity = rotateSensitivity;
-        // Position in view space.
+        // Position in clip space.
         this.position = vec3.fromValues(0, 0, -1);
-        const props = document.querySelector("#model-viewer").getBoundingClientRect();
-        // Aspect ratio.
-        this.aspectRatio = props.width / props.height;
-        // Near plane distance.
-        this.nearPlane = nearPlane;
-        // Maximum distance of model geometry from the model origin.
-        this.maximumRadius = maximumRadius;
         // Distance from the origin.
         let radius = vec3.length(position);
         // Phi. Units are in radians.
@@ -31,19 +28,26 @@ export class Camera
         let denominator = radius * Math.cos(this.phi);
         // Theta. Units are in radians.
         this.theta = denominator == 0 ? 0 : Math.asin(-position[2] / denominator);
-        this.transform = mat4.create();
-        this.transform[3] = 0;
-        this.transform[4] = 0;
-        this.transform[7] = 0;
-        this.transform[11] = 0;
-        this.transform[12] = 0;
-        this.transform[13] = 0;
-        this.transform[14] = 0;
-        this.transform[15] = this.maximumRadius + this.nearPlane;
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
+        this.near = near;
+        this.far = far;
+        this.projection = mat4.ortho(this.left, this.right, this.bottom, this.top, this.near, this.far);
+        this.view = mat4.create();
+        this.view[3] = 0;
+        this.view[4] = 0;
+        this.view[7] = 0;
+        this.view[11] = 0;
+        this.view[12] = 0;
+        this.view[13] = 0;
+        this.view[14] = 0;
+        this.view[15] = 1;
         this.setRotation();
     }
     /*
-        Sets the transform when rotating.
+        Sets the view matrix when rotating.
 
         deltaX: The change in the cursor's x position.
         deltaY: The change in the cursor's y position.
@@ -73,30 +77,33 @@ export class Camera
 
         deltaY: The change in depth.
     */
-    zoomCamera(deltaY)
+    zoomCamera(viewer, event)
     {
-        const scale = this.transform[15] - deltaY * this.zoomSensitivity;
-        if (scale < this.maximumRadius + this.nearPlane)
-            this.transform[15] = this.maximumRadius + this.nearPlane;
-        else
-            this.transform[15] = scale;
+        const x = (this.right - this.left) * event.clientX / viewer.ctx.canvas.width;
+        const y = (this.top - this.bottom) * -event.clientY / viewer.ctx.canvas.height;
+        const delta = this.zoomSensitivity * event.deltaY;
+        this.left += delta * (x - this.left);
+        this.right += delta * (x - this.right);
+        this.top += delta * (y - this.top);
+        this.bottom += delta * (y - this.bottom);
+        this.projection = mat4.ortho(this.left, this.right, this.bottom, this.top, this.near, this.far);
     }
     /*
-        Sets the rotation part of the transform. Assignment is column based.
+        Sets the rotation part of the view matrix. Assignment is column based.
 
         -sin(θ), 0, -cos(θ)
         -cos(θ) * sin(φ), cos(φ), sin(θ) * sin(φ)
-        -cos(θ) * cos(φ), -sin(φ), sin(θ) * cos(φ)
+        cos(θ) * cos(φ), sin(φ), -sin(θ) * cos(φ)
     */
     setRotation()
     {
-        this.transform[0] = -Math.sin(this.theta);
-        this.transform[1] = -Math.cos(this.theta) * Math.sin(this.phi);
-        this.transform[2] = -Math.cos(this.theta) * Math.cos(this.phi);
-        this.transform[5] = Math.cos(this.phi);
-        this.transform[6] = -Math.sin(this.phi);
-        this.transform[8] = -Math.cos(this.theta);
-        this.transform[9] = Math.sin(this.theta) * Math.sin(this.phi);
-        this.transform[10] = Math.sin(this.theta) * Math.cos(this.phi);
+        this.view[0] = -Math.sin(this.theta);
+        this.view[1] = -Math.cos(this.theta) * Math.sin(this.phi);
+        this.view[2] = Math.cos(this.theta) * Math.cos(this.phi);
+        this.view[5] = Math.cos(this.phi);
+        this.view[6] = Math.sin(this.phi);
+        this.view[8] = -Math.cos(this.theta);
+        this.view[9] = Math.sin(this.theta) * Math.sin(this.phi);
+        this.view[10] = -Math.sin(this.theta) * Math.cos(this.phi);
     }
 }

@@ -46,7 +46,7 @@ public static class SldWorksExtensions
         var folders = document.FeatureManager.GetFolders();
         if (folders.Count == 0)
             throw new Exception($"SldWorks.CreateAssemblyData error: No folders were found in {name}.");
-        var data = new AssemblyData(folders.Count);
+        var data = new AssemblyData(0, 1, new byte[4], folders.Count);
         for (var i = 0; i < folders.Count; i++)
         {
             name = ((Feature)folders[i].Object).Name;

@@ -20,16 +20,28 @@ export class Part extends Component
         0, 0, 0, 1
     */
     transform;
+    /*
+        Transform data.
+
+        Δx, Δy, Δz
+    */
+    collapsedTransform;
+    /*
+        Transform data.
+
+        Δx, Δy, Δz
+    */
+    explodedTransform;
+    // Vertex array identifier.
+    vertexArray;
+    // Vertex buffer identifier.
+    vertexBuffer;
 
     constructor()
     {
         super();
         this.setProperties();
         this.setTransform();
-        // Vertex array identifier.
-        this.vertexArray = 0;
-        // Vertex buffer identifier.
-        this.vertexBuffer = 0;
     }
     // Sets the properties using the data view.
     setProperties()
@@ -40,6 +52,30 @@ export class Part extends Component
             this.properties[i] = Component.view.getUint8(Component.index, true) / 255.0;
             Component.index++;
         }
+    }
+    // Updates the transform to use the exploded transform.
+    explode()
+    {
+        for (let i = 0; i < this.explodedTransform.length; i++)
+            this.transform[i + 12] = this.explodedTransform[i];
+    }
+    // Updates the transform to use the collapsed transform.
+    collapse()
+    {
+        for (let i = 0; i < this.collapsedTransform.length; i++)
+            this.transform[i + 12] = this.collapsedTransform[i];
+    }
+    /*
+        Sets the collapsed and exploded transform of this part.
+
+        transform: The exploded transform.
+    */
+    setTransform(transform)
+    {
+        this.collapsedTransform = new Array(3);
+        for (let i = 0; i < this.collapsedTransform.length; i++)
+            this.collapsedTransform[i] = this.transform[i + 12];
+        this.explodedTransform = transform;
     }
     // Sets the transform using the data view.
     setTransform()

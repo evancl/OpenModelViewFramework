@@ -35,6 +35,34 @@ export class Assembly extends Component
         }
         return null;
     }
+    // Updates the transforms of the child components to use the exploded transforms.
+    explode()
+    {
+        for (let i = 0; i < this.children.length; i++)
+            this.children[i].explode();
+    }
+    // Updates the transforms of the child components to use the collapsed transforms.
+    collapse()
+    {
+        for (let i = 0; i < this.children.length; i++)
+            this.children[i].collapse();
+    }
+    /*
+        Sets the collapsed and exploded transforms of the child components.
+
+        transform: The exploded transform.
+    */
+    setTransform(transform)
+    {
+        for (let i = 0; i < this.children.length; i++)
+            this.children[i].setTransform(transform);
+    }
+    // Hides the immediate children.
+    hideChildren()
+    {
+        for (let i = 0; i < this.children.length; i++)
+            this.children[i].isHidden = true;
+    }
     // Sets the children using the data view.
     setChildren()
     {

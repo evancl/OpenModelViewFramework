@@ -6,8 +6,8 @@ export class Light
         ambient: A COLORREF value that represents the ambient light.
         diffuse: A COLORREF value that represents the diffuse light.
         specular: A COLORREF value that represents the specular light.
-        diffuseDirection: The normalized diffuse light direction in model space.
-        specularPosition: The position of the specular light in view space.
+        diffuseDirection: The normalized diffuse light direction in clip space.
+        specularPosition: The position of the specular light in clip space.
     */
     constructor(ambient, diffuse, specular, diffuseDirection, specularPosition)
     {

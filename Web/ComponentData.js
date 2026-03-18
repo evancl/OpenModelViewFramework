@@ -19,10 +19,11 @@ export class ComponentData
         ComponentData.view = new DataView(data.buffer);
         ComponentData.index = 0;
         const useCompressedFormat = ComponentData.view.getUint8(ComponentData.index, true) == 1;
-        if (!useCompressedFormat)
-            throw new Error("ComponentData.constructor error: Uncompressed format is unsupported.");
         ComponentData.index++;
-        this.parseCompressed();
+        if (useCompressedFormat)
+            this.parseCompressed();
+        else
+            throw new Error("ComponentData.constructor error: Uncompressed format is unsupported.");
     }
     // Parses a component data file using the compressed format.
     parseCompressed()

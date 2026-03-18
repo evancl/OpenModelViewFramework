@@ -4,7 +4,7 @@ import * from "Line.js";
 
 export class AssemblyStep
 {
-    constructor()
+    constructor(lineStyle, lineThickness)
     {
         const length = AssemblyData.view.getUint8(AssemblyData.index, true);
         AssemblyData.index++;
@@ -22,7 +22,7 @@ export class AssemblyStep
         {
             this.lines = new Array(count);
             for (let i = 0; i < this.lines.length; i++)
-                this.lines[i] = new Line();
+                this.lines[i] = new Line(lineStyle, lineThickness);
         }
         // Components in the assembly step.
         this.components = new Array(AssemblyData.view.getInt16(AssemblyData.index, true));
