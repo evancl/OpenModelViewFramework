@@ -1,4 +1,4 @@
-import * from "AssemblyStep.js";
+import { AssemblyStep } from "./AssemblyStep.js";
 
 export class AssemblyData
 {

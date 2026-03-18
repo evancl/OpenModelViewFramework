@@ -1,4 +1,4 @@
-import * from "Node.js";
+import { Node } from "./Node.js";
 
 export class LinkedList
 {

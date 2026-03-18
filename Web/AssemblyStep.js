@@ -1,6 +1,6 @@
-import * from "AssemblyData.js";
-import * from "AssemblyStepComponent.js";
-import * from "Line.js";
+import { AssemblyData } from "./AssemblyData.js";
+import { AssemblyStepComponent } from "./AssemblyStepComponent.js";
+import { Line } from "./Line.js";
 
 export class AssemblyStep
 {
