@@ -1,9 +1,11 @@
-import { AssemblyData } from "./AssemblyData.js";
-import { AssemblyStepComponent } from "./AssemblyStepComponent.js";
-import { Line } from "./Line.js";
-
-export class AssemblyStep
+class AssemblyStep
 {
+    /*
+        Class constructor.
+
+        lineStyle: Explode line style.
+        lineThickness: Explode line thickness.
+    */
     constructor(lineStyle, lineThickness)
     {
         const length = AssemblyData.view.getUint8(AssemblyData.index, true);

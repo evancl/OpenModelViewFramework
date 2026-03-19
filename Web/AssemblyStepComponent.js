@@ -1,6 +1,4 @@
-import { AssemblyData } from "./AssemblyData.js";
-
-export class AssemblyStepComponent
+class AssemblyStepComponent
 {
     constructor()
     {

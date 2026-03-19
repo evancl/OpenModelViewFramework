@@ -1,4 +1,4 @@
-export class ComponentData
+class ComponentData
 {
     // View of data.
     static view;

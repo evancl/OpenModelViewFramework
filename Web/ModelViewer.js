@@ -1,7 +1,4 @@
-import { LinkedList } from "./LinkedList.js";
-import { Component, Part, Assembly } from "./Component.js";
-
-export class ModelViewer
+class ModelViewer
 {
     /*
         Class constructor.

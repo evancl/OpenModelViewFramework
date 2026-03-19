@@ -1,4 +1,4 @@
-export class Node
+class Node
 {
 	/*
 		Class constructor.

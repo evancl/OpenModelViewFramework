@@ -1,6 +1,4 @@
-import { Point } from "Point.js";
-
-export class Line
+class Line
 {
     // Vertex array identifier.
     vertexArray;
@@ -8,7 +6,12 @@ export class Line
     vertexBuffer;
     // Line geometry data.
     model;
+    /*
+        Class constructor.
 
+        lineStyle: Explode line style.
+        lineThickness: Explode line thickness.
+    */
     constructor(lineStyle, lineThickness)
     {
         // Explode line start point.
@@ -105,7 +108,7 @@ export class Line
         const p7 = vec3.add(start, d3);
         let index = 0;
         // End face.
-        const points =
+        let points =
         [
             p0,
             p1,
@@ -116,7 +119,7 @@ export class Line
         ];
         index = this.createFace(index, points, n0);
         // Start face.
-        const points =
+        points =
         [
             p4,
             p5,
@@ -127,7 +130,7 @@ export class Line
         ];
         index = this.createFace(index, points, vec3.scale(n0, -1));
         // Top face.
-        const points =
+        points =
         [
             p4,
             p5,
@@ -138,7 +141,7 @@ export class Line
         ];
         index = this.createFace(index, points, n1);
         // Bottom face.
-        const points =
+        points =
         [
             p7,
             p6,
@@ -149,7 +152,7 @@ export class Line
         ];
         index = this.createFace(index, points, vec3.scale(n1, -1));
         // Right face.
-        const points =
+        points =
         [
             p5,
             p6,
@@ -160,7 +163,7 @@ export class Line
         ];
         index = this.createFace(index, points, n2);
         // Left face.
-        const points =
+        points =
         [
             p7,
             p4,

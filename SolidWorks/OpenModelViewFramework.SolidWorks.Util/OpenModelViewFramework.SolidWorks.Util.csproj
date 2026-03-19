@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-windows10.0.17763.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Title>Open Model View Framework SolidWorks Utility</Title>
+    <Version>0.9.0</Version>
+    <Authors>Drafting Extensions, LLC</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\OpenModelViewFramework.Library\OpenModelViewFramework.Library.csproj" />
+    <ProjectReference Include="..\OpenModelViewFramework.SolidWorks.Library\OpenModelViewFramework.SolidWorks.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SolidWorks.Interop.sldworks">
+      <HintPath>..\OpenModelViewFramework.SolidWorks.Library\Libraries\SolidWorks.Interop.sldworks.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

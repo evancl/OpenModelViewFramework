@@ -1,0 +1,47 @@
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
+using OpenModelViewFramework.Library;
+
+namespace OpenModelViewFramework.SolidWorks.Library;
+
+public static class TreeContolItemExtensions
+{
+    /*
+        Gets the assembly components in this tree control item.
+
+        parent: The tree control item to use.
+        document: The document to use.
+        isExploded: Indicates if the model is in an exploded state.
+    */
+    public static List<AssemblyStepComponent> GetAssemblyComponents(this TreeControlItem parent, ModelDoc2 document, bool isExploded)
+    {
+        List<AssemblyStepComponent> components = new();
+        var item = parent.GetFirstChild();
+        while (item != null)
+        {
+            if (item.ObjectType != (int)swTreeControlItemType_e.swFeatureManagerItem_Component)
+            {
+                item = item.GetNext();
+                continue;
+            }
+            var component = (Component2)item.Object;
+            float[] translation;
+            if (isExploded)
+            {
+                var transform = (MathTransform)component.GetSpecificTransform(false);
+                var data = (double[])transform.ArrayData;
+                translation =
+                [
+                    (float)data[9],
+                    (float)data[10],
+                    (float)data[11]
+                ];
+            }
+            else
+                translation = null;
+            components.Add(new AssemblyStepComponent(component.GetName(document), translation));
+            item = item.GetNext();
+        }
+        return components;
+    }
+}

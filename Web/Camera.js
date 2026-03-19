@@ -1,11 +1,11 @@
-export class Camera
+class Camera
 {
     /*
         Class constructor.
 
+        position: The initial camera position in model space.
         zoomSensitivity: A floating point value that indicates the zoom sensitivity.
         rotateSensitivity: A floating point value that indicates the rotate sensitivity.
-        position: The initial camera position.
         left: The left bound of the frustum.
         right: The right bound of the frustum.
         bottom: The bottom bound of the frustum.
@@ -13,7 +13,7 @@ export class Camera
         near: The near bound of the frustum.
         far: The far bound of the frustum.
     */
-    constructor(zoomSensitivity, rotateSensitivity, scale, position, left, right, top, bottom, near, far)
+    constructor(position, zoomSensitivity, rotateSensitivity, left, right, bottom, top, near, far)
     {
         // Camera zoom sensitivity.
         this.zoomSensitivity = zoomSensitivity;

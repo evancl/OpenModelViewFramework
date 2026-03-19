@@ -3,20 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|c:\\users\\evana\\documents\\projects\\drafting extensions\\openmodelviewframework\\shared\\point.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|solutionrelative:shared\\point.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|c:\\users\\evana\\documents\\projects\\drafting extensions\\openmodelviewframework\\shared\\part.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|solutionrelative:shared\\part.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|c:\\users\\evana\\documents\\projects\\drafting extensions\\openmodelviewframework\\shared\\componentproperties.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|solutionrelative:shared\\componentproperties.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|c:\\users\\evana\\documents\\projects\\drafting extensions\\openmodelviewframework\\shared\\component.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EEBE81D8-5843-4715-8DA1-051EEDEDEFE4}|Shared\\Shared.csproj|solutionrelative:shared\\component.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BA5C22C6-C61A-426E-BF91-CBB584916BEE}|SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\OpenModelViewFramework.SolidWorks.Library.csproj|c:\\users\\evana\\documents\\projects\\drafting extensions\\openmodelviewframework\\solidworks\\openmodelviewframework.solidworks.library\\sldworksextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA5C22C6-C61A-426E-BF91-CBB584916BEE}|SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\OpenModelViewFramework.SolidWorks.Library.csproj|solutionrelative:solidworks\\openmodelviewframework.solidworks.library\\sldworksextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,53 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Point.cs",
-              "DocumentMoniker": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\Point.cs",
-              "RelativeDocumentMoniker": "Shared\\Point.cs",
-              "ToolTip": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\Point.cs",
-              "RelativeToolTip": "Shared\\Point.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAALAAAAAAAAAA==",
+              "Title": "SldWorksExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
+              "RelativeDocumentMoniker": "SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
+              "ToolTip": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
+              "RelativeToolTip": "SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T04:08:47.157Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Part.cs",
-              "DocumentMoniker": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\Part.cs",
-              "RelativeDocumentMoniker": "Shared\\Part.cs",
-              "ToolTip": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\Part.cs",
-              "RelativeToolTip": "Shared\\Part.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T04:07:31.535Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ComponentProperties.cs",
-              "DocumentMoniker": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\ComponentProperties.cs",
-              "RelativeDocumentMoniker": "Shared\\ComponentProperties.cs",
-              "ToolTip": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\ComponentProperties.cs",
-              "RelativeToolTip": "Shared\\ComponentProperties.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T04:06:26.732Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Component.cs",
-              "DocumentMoniker": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\Component.cs",
-              "RelativeDocumentMoniker": "Shared\\Component.cs",
-              "ToolTip": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\Shared\\Component.cs",
-              "RelativeToolTip": "Shared\\Component.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T04:05:29.219Z",
+              "WhenOpened": "2026-03-18T23:19:30.078Z",
               "EditorCaption": ""
             }
           ]

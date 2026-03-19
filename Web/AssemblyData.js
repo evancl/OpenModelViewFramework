@@ -1,6 +1,4 @@
-import { AssemblyStep } from "./AssemblyStep.js";
-
-export class AssemblyData
+class AssemblyData
 {
     // View of data.
     static view;

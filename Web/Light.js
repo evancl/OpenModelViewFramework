@@ -1,15 +1,15 @@
-export class Light
+class Light
 {
     /*
         Class constructor.
 
+        diffuseDirection: The normalized diffuse light direction in clip space.
+        specularPosition: The position of the specular light in clip space.
         ambient: A COLORREF value that represents the ambient light.
         diffuse: A COLORREF value that represents the diffuse light.
         specular: A COLORREF value that represents the specular light.
-        diffuseDirection: The normalized diffuse light direction in clip space.
-        specularPosition: The position of the specular light in clip space.
     */
-    constructor(ambient, diffuse, specular, diffuseDirection, specularPosition)
+    constructor(diffuseDirection, specularPosition, ambient, diffuse, specular)
     {
         this.ambient = vec3.fromValues(
             (ambient & 0xFF) / 255,
