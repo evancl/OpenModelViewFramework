@@ -7,7 +7,7 @@ namespace OpenModelViewFramework.SolidWorks.Util;
 
 class App
 {
-    // The SOLIDWORKS app.
+    // The SolidWorks app.
     SldWorks Instance;
 
     App() {}
@@ -52,12 +52,12 @@ class App
             Instance?.ExitApp();
         }
     }
-    // Creates a SOLIDWORKS process.
+    // Creates a SolidWorks process.
     void CreateProcess()
     {
         var instances = Process.GetProcessesByName("sldworks");
         if (instances.Length != 0)
-            throw new Exception("Please terminate any open SOLIDWORKS processes before running this application.");
+            throw new Exception("Please terminate any open SolidWorks processes before running this application.");
         var programType = Type.GetTypeFromProgID("SldWorks.Application");
         Instance = (SldWorks)Activator.CreateInstance(programType);
         Instance.UserControl = true;

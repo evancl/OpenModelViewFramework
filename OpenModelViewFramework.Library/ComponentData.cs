@@ -4,17 +4,20 @@ namespace OpenModelViewFramework.Library;
 
 public class ComponentData
 {
+    short[] _IDs;
+    ComponentProperties[] _Properties;
     // Part IDs.
     public short[] IDs
     {
         get
         {
-            return IDs;
+            return _IDs;
         }
         set
         {
             if (value != null && (value.Length == 0 || value.Length > short.MaxValue))
                 throw new ArgumentOutOfRangeException($"ComponentData.IDs length must be between 1 and {short.MaxValue} inclusive.");
+            _IDs = value;
         }
     }
     // Component properties to update.
@@ -22,12 +25,13 @@ public class ComponentData
     {
         get
         {
-            return Properties;
+            return _Properties;
         }
         set
         {
             if (value != null && (value.Length == 0 || value.Length > short.MaxValue))
                 throw new ArgumentOutOfRangeException($"ComponentData.Properties length must be between 1 and {short.MaxValue} inclusive.");
+            _Properties = value;
         }
     }
     // STL file names.
@@ -54,7 +58,12 @@ public class ComponentData
     void GetBinaryRep(List<byte> data, bool useCompressedFormat)
     {
         if (useCompressedFormat)
+        {
             data.Add((byte)1);
+            data.AddRange(GetBytes((short)Files.Length));
+            for (short i = 0; i < Files.Length; i++)
+                GetGeometryBinaryRep(data, i);
+        }
         else
         {
             data.Add((byte)0);
@@ -66,19 +75,11 @@ public class ComponentData
                 foreach (var property in Properties)
                     property.GetBinaryRep(data);
             }
-        }
-        if (IDs == null)
-            data.AddRange(GetBytes((short)0));
-        else
-        {
-            data.AddRange(GetBytes((short)IDs.Length));
-            if (useCompressedFormat)
-            {
-                foreach (var id in IDs)
-                    GetGeometryBinaryRep(data, id);
-            }
+            if (IDs == null)
+                data.AddRange(GetBytes((short)0));
             else
             {
+                data.AddRange(GetBytes((short)IDs.Length));
                 foreach (var id in IDs)
                 {
                     data.AddRange(GetBytes(id));
@@ -98,8 +99,7 @@ public class ComponentData
         var index = 80;
         var count = ToUInt32(bytes, index);
         index += 4;
-        // 72 bytes per triangle.
-        data.AddRange(GetBytes(count * 72));
+        data.AddRange(GetBytes(count));
         for (var i = 0; i < count; i++)
         {
             var normal = new ReadOnlySpan<byte>(bytes, index, 12);

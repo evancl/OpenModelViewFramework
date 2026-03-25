@@ -2,17 +2,19 @@ namespace OpenModelViewFramework.Library;
 
 public class ComponentProperties
 {
+    byte _Properties;
     // Bit field that indicates which properties in the component have been updated. Size: 1 byte.
     byte Properties
     {
         get
         {
-            return Properties;    
+            return _Properties;    
         }
         set
         {
-            if (Properties == 0 || Properties > 15)
+            if (value == 0 || value > 15)
                 throw new ArgumentOutOfRangeException("ComponentProperties.Properties must be between 1 and 15 inclusive.");
+            _Properties = value;
         }
     }
     // Updated component.

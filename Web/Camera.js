@@ -34,7 +34,8 @@ class Camera
         this.bottom = bottom;
         this.near = near;
         this.far = far;
-        this.projection = mat4.ortho(this.left, this.right, this.bottom, this.top, this.near, this.far);
+        this.projection = mat4.create();
+        this.projection = mat4.ortho(this.projection, this.left, this.right, this.bottom, this.top, this.near, this.far);
         this.view = mat4.create();
         this.view[3] = 0;
         this.view[4] = 0;
@@ -86,7 +87,7 @@ class Camera
         this.right += delta * (x - this.right);
         this.top += delta * (y - this.top);
         this.bottom += delta * (y - this.bottom);
-        this.projection = mat4.ortho(this.left, this.right, this.bottom, this.top, this.near, this.far);
+        this.projection = mat4.ortho(this.projection, this.left, this.right, this.bottom, this.top, this.near, this.far);
     }
     /*
         Sets the rotation part of the view matrix. Assignment is column based.

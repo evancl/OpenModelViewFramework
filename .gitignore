@@ -1,2 +1,7 @@
 .vs*
 obj*
+Web/Test.js
+Web/Test.cdata
+Web/Test.ctree
+Web/Test.html
+Web/Test.css

@@ -5,12 +5,15 @@ namespace OpenModelViewFramework.Library;
 
 public class AssemblyStep
 {
+    string _Name;
+    Line[] _Lines;
+    List<AssemblyStepComponent> _Components;
     // Name of the assembly step.
     string Name
     {
         get
         {
-            return Name;
+            return _Name;
         }
         set
         {
@@ -19,6 +22,7 @@ public class AssemblyStep
             var length = Encoding.UTF8.GetBytes(value).Length;
             if (length == 0 || length > byte.MaxValue)
                 throw new ArgumentOutOfRangeException($"AssemblyStep.Name length must be between 1 and {byte.MaxValue} inclusive.");
+            _Name = value;
         }
     }
     // Explode line list.
@@ -26,12 +30,13 @@ public class AssemblyStep
     {
         get
         {
-            return Lines;    
+            return _Lines;    
         }
         set
         {
             if (value != null && (value.Length == 0 || value.Length > short.MaxValue))
                 throw new ArgumentOutOfRangeException($"AssemblyStep.Lines length must be between 1 and {short.MaxValue} inclusive.");
+            _Lines = value;
         }
     }
     // Components in the assembly step.
@@ -39,7 +44,7 @@ public class AssemblyStep
     {
         get
         {
-            return Components;
+            return _Components;
         }
         set
         {
@@ -47,6 +52,7 @@ public class AssemblyStep
                 throw new ArgumentNullException("AssemblyStep.Components cannot be null.");
             else if (value.Count == 0 || value.Count > short.MaxValue)
                 throw new ArgumentOutOfRangeException($"AssemblyStep.Components count must be between 1 and {short.MaxValue} inclusive.");
+            _Components = value;
         }
     }
 

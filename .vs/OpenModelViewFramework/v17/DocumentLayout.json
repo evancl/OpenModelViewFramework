@@ -1,10 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\",
+  "WorkspaceRootPath": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BA5C22C6-C61A-426E-BF91-CBB584916BEE}|SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\OpenModelViewFramework.SolidWorks.Library.csproj|c:\\users\\evana\\documents\\projects\\drafting extensions\\openmodelviewframework\\solidworks\\openmodelviewframework.solidworks.library\\sldworksextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BA5C22C6-C61A-426E-BF91-CBB584916BEE}|SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\OpenModelViewFramework.SolidWorks.Library.csproj|solutionrelative:solidworks\\openmodelviewframework.solidworks.library\\sldworksextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}|OpenModelViewFramework.Library\\OpenModelViewFramework.Library.csproj|c:\\users\\evan closs\\documents\\projects\\drafting extensions\\openmodelviewframework\\openmodelviewframework.library\\componentdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}|OpenModelViewFramework.Library\\OpenModelViewFramework.Library.csproj|solutionrelative:openmodelviewframework.library\\componentdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93CB192F-0BE0-4BC5-ABE9-FDA975324093}|SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\OpenModelViewFramework.SolidWorks.Util.csproj|c:\\users\\evan closs\\documents\\projects\\drafting extensions\\openmodelviewframework\\solidworks\\openmodelviewframework.solidworks.util\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93CB192F-0BE0-4BC5-ABE9-FDA975324093}|SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\OpenModelViewFramework.SolidWorks.Util.csproj|solutionrelative:solidworks\\openmodelviewframework.solidworks.util\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,15 +23,36 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "SldWorksExtensions.cs",
-              "DocumentMoniker": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
-              "RelativeDocumentMoniker": "SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
-              "ToolTip": "C:\\Users\\evana\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
-              "RelativeToolTip": "SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\SldWorksExtensions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAGAAAAAAAAAA==",
+              "Title": "ComponentData.cs",
+              "DocumentMoniker": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\OpenModelViewFramework.Library\\ComponentData.cs",
+              "RelativeDocumentMoniker": "OpenModelViewFramework.Library\\ComponentData.cs",
+              "ToolTip": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\OpenModelViewFramework.Library\\ComponentData.cs",
+              "RelativeToolTip": "OpenModelViewFramework.Library\\ComponentData.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAAAFsAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T23:19:30.078Z",
+              "WhenOpened": "2026-03-25T04:53:52.052Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.cs",
+              "DocumentMoniker": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
+              "RelativeDocumentMoniker": "SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
+              "ToolTip": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
+              "RelativeToolTip": "SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACgAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T04:03:05.797Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             }
           ]
         }

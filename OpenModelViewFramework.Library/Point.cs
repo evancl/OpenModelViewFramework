@@ -4,17 +4,21 @@ namespace OpenModelViewFramework.Library;
 
 public class Point
 {
+    float _X;
+    float _Y;
+    float _Z;
     // X coordinate.
     float X
     {
         get
         {
-            return X;    
+            return _X;    
         }
         set
         {
             if (value == float.NegativeInfinity || value == float.PositiveInfinity)
                 throw new ArgumentOutOfRangeException("Point.X must be between negative infinity and positive infinity exclusive.");
+            _X = value;
         }
     }
     // Y coordinate.
@@ -22,12 +26,13 @@ public class Point
     {
         get
         {
-            return Y;
+            return _Y;
         }
         set
         {
             if (value == float.NegativeInfinity || value == float.PositiveInfinity)
                 throw new ArgumentOutOfRangeException("Point.Y must be between negative infinity and positive infinity exclusive.");
+            _Y = value;
         }
     }
     // Z coordinate.
@@ -35,12 +40,13 @@ public class Point
     {
         get
         {
-            return Z;
+            return _Z;
         }
         set
         {
             if (value == float.NegativeInfinity || value == float.PositiveInfinity)
                 throw new ArgumentOutOfRangeException("Point.Z must be between negative infinity and positive infinity exclusive.");
+            _Z = value;
         }
     }
 

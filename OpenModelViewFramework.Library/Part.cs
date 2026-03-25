@@ -4,17 +4,21 @@ namespace OpenModelViewFramework.Library;
 
 public class Part : Component
 {
+    short _ID;
+    byte[] _Properties;
+    float[] _Transform;
     // Identifier for geometry data. Size: 2 bytes.
     protected override short ID
     {
         get
         {
-            return ID;
+            return _ID;
         }
         set
         {
             if (value < 0 || value > short.MaxValue)
                 throw new ArgumentOutOfRangeException($"Part.ID must be between 0 and {short.MaxValue} inclusive.");
+            _ID = value;
         }
     }
     /*
@@ -29,7 +33,7 @@ public class Part : Component
     {
         get
         {
-            return Properties;
+            return _Properties;
         }
         set
         {
@@ -37,6 +41,7 @@ public class Part : Component
                 throw new ArgumentNullException("Part.Properties cannot be null.");
             else if (value.Length != 4)
                 throw new ArgumentOutOfRangeException("Part.Properties length must be 4.");
+            _Properties = value;
         }
     }
     /*
@@ -51,7 +56,7 @@ public class Part : Component
     {
         get
         {
-            return Transform;
+            return _Transform;
         }
         set
         {
@@ -69,6 +74,7 @@ public class Part : Component
                 if (value[i] == float.NegativeInfinity || value[i] == float.PositiveInfinity)
                     throw new ArgumentOutOfRangeException("Part.Transform translation elements must be between negative infinity and positive infinity exclusive.");
             }
+            _Transform = value;
         }
     }
 

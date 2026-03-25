@@ -4,6 +4,10 @@ namespace OpenModelViewFramework.Library;
 
 public class AssemblyData
 {
+    byte _LineStyle;
+    byte _LineThickness;
+    byte[] _Properties;
+    AssemblyStep[] _Steps;
     /*
         Explode line style.
 
@@ -14,12 +18,13 @@ public class AssemblyData
     {
         get
         {
-            return LineStyle;
+            return _LineStyle;
         }
         set
         {
             if (value > 1)
                 throw new ArgumentOutOfRangeException("AssemblyData.LineStyle must be less than or equal to 1.");
+            _LineStyle = value;
         }
     }
     // Explode line thickness.
@@ -27,12 +32,13 @@ public class AssemblyData
     {
         get
         {
-            return LineThickness;
+            return _LineThickness;
         }
         set
         {
             if (value == 0)
                 throw new ArgumentOutOfRangeException("AssemblyData.LineThickness must be greater than 0.");
+            _LineThickness = value;
         }
     }
     /*
@@ -47,7 +53,7 @@ public class AssemblyData
     {
         get
         {
-            return Properties;
+            return _Properties;
         }
         set
         {
@@ -55,6 +61,7 @@ public class AssemblyData
                 throw new ArgumentNullException("AssemblyData.Properties cannot be null.");
             else if (value.Length != 4)
                 throw new ArgumentOutOfRangeException("AssemblyData.Properties length must be 4.");
+            _Properties = value;
         }
     }
     // Assembly steps.
@@ -62,7 +69,7 @@ public class AssemblyData
     {
         get
         {
-            return Steps;   
+            return _Steps;   
         }
         set
         {
@@ -70,6 +77,7 @@ public class AssemblyData
                 throw new ArgumentNullException("AssemblyData.Steps cannot be null.");
             else if (value.Length == 0 || value.Length > short.MaxValue)
                 throw new ArgumentOutOfRangeException($"AssemblyData.Steps length must be between 1 and {short.MaxValue} inclusive.");
+            _Steps = value;
         }
     }
 

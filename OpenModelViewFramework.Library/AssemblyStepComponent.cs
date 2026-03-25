@@ -5,12 +5,14 @@ namespace OpenModelViewFramework.Library;
 
 public class AssemblyStepComponent
 {
+    string _Name;
+    float[] _Transform;
     // Name of the component.
     string Name
     {
         get
         {
-            return Name;
+            return _Name;
         }
         set
         {
@@ -19,6 +21,7 @@ public class AssemblyStepComponent
             var length = Encoding.UTF8.GetBytes(value).Length;
             if (length == 0 || length > byte.MaxValue)
                 throw new ArgumentOutOfRangeException($"AssemblyStepComponent.Name length must be between 1 and {byte.MaxValue} inclusive.");
+            _Name = value;
         }
     }
     /*
@@ -30,7 +33,7 @@ public class AssemblyStepComponent
     {
         get
         {
-            return Transform;    
+            return _Transform;    
         }
         set
         {
@@ -44,6 +47,7 @@ public class AssemblyStepComponent
                         throw new ArgumentOutOfRangeException("AssemblyStepComponent.Transform elements must be between negative infinity and positive infinity exclusive.");
                 }
             }
+            _Transform = value;
         }
     }
 

@@ -1,11 +1,15 @@
+using OpenModelViewFramework.Library;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
-using OpenModelViewFramework.Library;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace OpenModelViewFramework.SolidWorks.Library;
 
 public static class SldWorksExtensions
 {
+    static Regex FirstExpression;
+    static Regex SecondExpression;
     /*
         Creates an assembly data instance using the model with the given file name.
 
@@ -88,6 +92,8 @@ public static class SldWorksExtensions
             SearchOption.AllDirectories
         );
         int errors = 0, warnings = 0;
+        var firstExpression = new Regex("[\\:*?<|]+");
+        var secondExpression = new Regex("[>]+");
         foreach (var file in files)
         {
             var document = app.OpenDoc6(
@@ -117,20 +123,21 @@ public static class SldWorksExtensions
                 out _,
                 out _
             );
-            if (result != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue || viewable != "Yes")
+            if (result != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue || viewable == "No")
             {
                 app.CloseDoc(file);
                 continue;
             }
             var path = $"{directory}\\{Path.GetFileNameWithoutExtension(file)}";
-            var names = (object[])document.GetConfigurationNames();
             var data = app.GetExportFileData((int)swExportDataFileType_e.swExportPdfData);
+            var names = (object[])document.GetConfigurationNames();
             foreach (var name in names)
             {
                 if ((string)name != document.ConfigurationManager.ActiveConfiguration.Name)
                     document.ShowConfiguration2((string)name);
+                var absolutePath = $"{path} ({secondExpression.Replace(firstExpression.Replace((string)name, "["), "]")}).stl";
                 document.Extension.SaveAs3(
-                    $"{path} ({(string)name}).stl",
+                    absolutePath,
                     (int)swSaveAsVersion_e.swSaveAsCurrentVersion,
                     (int)swSaveAsOptions_e.swSaveAsOptions_Silent,
                     data,
@@ -139,7 +146,7 @@ public static class SldWorksExtensions
                     ref warnings
                 );
                 if (errors != 0)
-                    throw new Exception($"SldWorks.ExportSTLFiles error: Failed to save {path} ({(string)name}).stl. Errors: {errors}.");
+                    throw new Exception($"SldWorks.ExportSTLFiles error: Failed to save {absolutePath}. Errors: {errors}.");
             }
             app.CloseDoc(file);
         }
@@ -253,13 +260,15 @@ public static class SldWorksExtensions
         );
         if (errors == (int)swActivateDocError_e.swGenericActivateError)
             throw new Exception($"SldWorks.CreateComponentTree error: Failed to activate {name}. Errors: {errors}.");
+        FirstExpression = new Regex("[\\:*?<|]+");
+        SecondExpression = new Regex("[>]+");
         var component = app.CreateComponentTree(
             document,
             files,
             String.Empty,
             Path.GetFileNameWithoutExtension(document.GetPathName()),
             property,
-            "Default",
+            document.ConfigurationManager.ActiveConfiguration.Name,
             app.GetDefaultTransform(),
             false
         );
@@ -291,7 +300,7 @@ public static class SldWorksExtensions
             out _,
             out _
         );
-        if (result != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue || viewable != "Yes")
+        if (result != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue || viewable == "No")
         {
             app.CloseDoc(document.GetPathName());
             return null;
@@ -338,6 +347,8 @@ public static class SldWorksExtensions
                 );
                 if (errors == (int)swActivateDocError_e.swGenericActivateError)
                     throw new Exception($"SldWorks.CreateComponentTree error: Failed to activate {childComponent.GetPathName()}. Errors: {errors}.");
+                else if (childComponent.ReferencedConfiguration != childComponentDocument.ConfigurationManager.ActiveConfiguration.Name)
+                    childComponentDocument.ShowConfiguration2(childComponent.ReferencedConfiguration);
                 manager = childComponentDocument.Extension.CustomPropertyManager[String.Empty];
                 result = manager.Get6(
                     property,
@@ -347,7 +358,7 @@ public static class SldWorksExtensions
                     out _,
                     out _
                 );
-                if (result != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue || viewable != "Yes")
+                if (result != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue || viewable == "No")
                 {
                     app.CloseDoc(childComponent.GetPathName());
                     continue;
@@ -360,7 +371,7 @@ public static class SldWorksExtensions
                     componentPath == String.Empty ? childComponentName : $"{componentPath}/{childComponentName}",
                     childComponentName,
                     property,
-                    childComponent.ReferencedConfiguration,
+                    SecondExpression.Replace(FirstExpression.Replace(childComponent.ReferencedConfiguration, "["), "]"),
                     (MathTransform)transform.Multiply(childComponent.Transform2),
                     childComponentHidden
                 );
@@ -383,8 +394,8 @@ public static class SldWorksExtensions
                     type,
                     [
                         isHidden,
-                        componentName,
                         componentPath,
+                        componentName,
                         children
                     ]
                 );
@@ -393,15 +404,15 @@ public static class SldWorksExtensions
             {
                 component = new Assembly(
                     isHidden,
-                    componentName,
                     componentPath,
+                    componentName,
                     children
                 );
             }
         }
         else
         {
-            var fileName = $"{Path.GetFileNameWithoutExtension(document.GetPathName())} ({config})";
+            var fileName = $"{Path.GetFileNameWithoutExtension(document.GetPathName())} ({SecondExpression.Replace(FirstExpression.Replace(config, "["), "]")})";
             var id = (short)Array.BinarySearch(files, fileName);
             if (id < 0)
                 throw new Exception($"SldWorks.CreateComponentTree error: Failed to find \"{fileName}\" in files.");
@@ -423,8 +434,8 @@ public static class SldWorksExtensions
                     [
                         id,
                         isHidden,
-                        componentName,
                         componentPath,
+                        componentName,
                         componentProperties,
                         transform.GetAdjoint()
                     ]
@@ -435,8 +446,8 @@ public static class SldWorksExtensions
                 component = new Part(
                     id,
                     isHidden,
-                    componentName,
                     componentPath,
+                    componentName,
                     componentProperties,
                     transform.GetAdjoint()
                 );

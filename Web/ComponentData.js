@@ -29,8 +29,8 @@ class ComponentData
     parseCompressed()
     {
         this.properties = null;
-        const count = ComponentData.view.getInt16(ComponentData.index, true);
-        index += 2;
+        let count = ComponentData.view.getInt16(ComponentData.index, true);
+        ComponentData.index += 2;
         if (count == 0)
             this.models = null;
         else
@@ -38,10 +38,10 @@ class ComponentData
             this.models = new Array(count);
             for (let i = 0; i < this.models.length; i++)
             {
-                const size = ComponentData.view.getInt32(ComponentData.index, true);
+                count = ComponentData.view.getUint32(ComponentData.index, true);
                 ComponentData.index += 4;
-                this.models[id] = new Float32Array(ComponentData.view.buffer.slice(ComponentData.index, ComponentData.index + size));
-                ComponentData.index += size;
+                this.models[i] = new Float32Array(ComponentData.view.buffer.slice(ComponentData.index, ComponentData.index + count * 72));
+                ComponentData.index += count * 72;
             }
         }
     }

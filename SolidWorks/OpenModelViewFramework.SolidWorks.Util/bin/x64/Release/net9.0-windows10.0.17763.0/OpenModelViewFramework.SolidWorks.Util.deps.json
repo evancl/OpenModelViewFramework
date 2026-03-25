@@ -1,0 +1,88 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "OpenModelViewFramework.SolidWorks.Util/0.9.0": {
+        "dependencies": {
+          "OpenModelViewFramework.Library": "0.9.0",
+          "OpenModelViewFramework.SolidWorks.Library": "0.9.0",
+          "SolidWorks.Interop.sldworks": "31.3.0.44",
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.17763.57"
+        },
+        "runtime": {
+          "OpenModelViewFramework.SolidWorks.Util.dll": {}
+        }
+      },
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.17763.57": {
+        "runtime": {
+          "Microsoft.Windows.SDK.NET.dll": {
+            "assemblyVersion": "10.0.17763.38",
+            "fileVersion": "10.0.17763.55"
+          },
+          "WinRT.Runtime.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.48161"
+          }
+        }
+      },
+      "OpenModelViewFramework.Library/0.9.0": {
+        "runtime": {
+          "OpenModelViewFramework.Library.dll": {
+            "assemblyVersion": "0.9.0.0",
+            "fileVersion": "0.9.0.0"
+          }
+        }
+      },
+      "OpenModelViewFramework.SolidWorks.Library/0.9.0": {
+        "dependencies": {
+          "OpenModelViewFramework.Library": "0.9.0"
+        },
+        "runtime": {
+          "OpenModelViewFramework.SolidWorks.Library.dll": {
+            "assemblyVersion": "0.9.0.0",
+            "fileVersion": "0.9.0.0"
+          }
+        }
+      },
+      "SolidWorks.Interop.sldworks/31.3.0.44": {
+        "runtime": {
+          "SolidWorks.Interop.sldworks.dll": {
+            "assemblyVersion": "31.3.0.44",
+            "fileVersion": "31.3.0.44"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OpenModelViewFramework.SolidWorks.Util/0.9.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.17763.57": {
+      "type": "runtimepack",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OpenModelViewFramework.Library/0.9.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OpenModelViewFramework.SolidWorks.Library/0.9.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SolidWorks.Interop.sldworks/31.3.0.44": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
