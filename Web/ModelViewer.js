@@ -31,6 +31,8 @@ class ModelViewer
         if (this.ctx === null)
             throw new Error("ModelViewer.constructor error: Failed to initialize viewer.");
         const props = viewer.getBoundingClientRect();
+        this.left = props.left;
+        this.top = props.top;
         this.ctx.canvas.width = props.width;
         this.ctx.canvas.height = props.height;
         this.ctx.viewport(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);

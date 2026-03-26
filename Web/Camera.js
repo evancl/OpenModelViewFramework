@@ -3,7 +3,7 @@ class Camera
     /*
         Class constructor.
 
-        position: The initial camera position in model space.
+        position: The camera position in model space.
         zoomSensitivity: A floating point value that indicates the zoom sensitivity.
         rotateSensitivity: A floating point value that indicates the rotate sensitivity.
         left: The left bound of the frustum.
@@ -43,7 +43,7 @@ class Camera
         this.view[11] = 0;
         this.view[12] = 0;
         this.view[13] = 0;
-        this.view[14] = 0;
+        this.view[14] = -radius;
         this.view[15] = 1;
         this.setRotation();
     }
@@ -76,17 +76,18 @@ class Camera
     /*
         Sets the scale when zooming.
 
-        deltaY: The change in depth.
+        viewer: The model viewer to use.
+        event: The scroll event.
     */
     zoomCamera(viewer, event)
     {
-        const x = (this.right - this.left) * event.clientX / viewer.ctx.canvas.width;
-        const y = (this.top - this.bottom) * -event.clientY / viewer.ctx.canvas.height;
+        const x = (this.right - this.left) * (event.clientX - viewer.left) / viewer.ctx.canvas.width + this.left;
+        const y = (this.bottom - this.top) * (event.clientY - viewer.top) / viewer.ctx.canvas.height + this.top;
         const delta = this.zoomSensitivity * event.deltaY;
-        this.left += delta * (x - this.left);
-        this.right += delta * (x - this.right);
-        this.top += delta * (y - this.top);
-        this.bottom += delta * (y - this.bottom);
+        this.left -= delta * (x - this.left);
+        this.right += delta * (this.right - x);
+        this.top += delta * (this.top - y);
+        this.bottom -= delta * (y - this.bottom);
         this.projection = mat4.ortho(this.projection, this.left, this.right, this.bottom, this.top, this.near, this.far);
     }
     /*
