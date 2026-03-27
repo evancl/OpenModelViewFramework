@@ -59,21 +59,17 @@ public static class SldWorksExtensions
         {
             var item = folders[i];
             name = ((Feature)item.Object).Name;
-            Line[] lines;
             List<AssemblyStepComponent> components;
             if (viewNames.Contains(name))
             {
                 assembly.ShowExploded2(true, name);
-                lines = document.GetExplodeLines(name);
                 components = item.GetAssemblyComponents(document, true);
                 assembly.ShowExploded2(false, name);
             }
             else
-            {
-                lines = null;
                 components = item.GetAssemblyComponents(document, false);
-            }
-            data.Steps[i] = new AssemblyStep(name, lines, components);
+            // As of 3-26-26, there is no support for retrieving explode lines.
+            data.Steps[i] = new AssemblyStep(name, null, components);
         }
         return data;
     }

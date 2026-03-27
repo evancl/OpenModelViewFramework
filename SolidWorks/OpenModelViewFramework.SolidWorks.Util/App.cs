@@ -23,18 +23,27 @@ class App
             switch (args[0])
             {
                 case "-ad":
+                    if (args.Length != 2)
+                        throw new Exception("App.Run error: Invalid number of arguments.");
+                    CreateProcess();
                     Instance.CreateAssemblyData(args[1]).CreateFile(Path.GetFileNameWithoutExtension(args[1]));
                     break;
                 case "-cd":
+                    if (args.Length != 2)
+                        throw new Exception("App.Run error: Invalid number of arguments.");
                     var data = new ComponentData();
                     data.CreateFile(args[1], true);
                     break;
                 case "-ct":
+                    if (args.Length != 3)
+                        throw new Exception("App.Run error: Invalid number of arguments.");
                     CreateProcess();
                     var component = Instance.CreateComponentTree(args[1], args[2]);
                     component.CreateComponentTreeFile();
                     break;
                 case "-stl":
+                    if (args.Length != 2)
+                        throw new Exception("App.Run error: Invalid number of arguments.");
                     CreateProcess();
                     Instance.ExportStlFiles(args[1]);
                     break;

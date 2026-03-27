@@ -81,8 +81,8 @@ class Camera
     */
     zoomCamera(viewer, event)
     {
-        const x = (this.right - this.left) * (event.clientX - viewer.left) / viewer.ctx.canvas.width + this.left;
-        const y = (this.bottom - this.top) * (event.clientY - viewer.top) / viewer.ctx.canvas.height + this.top;
+        const x = (this.right - this.left) * (event.clientX + document.documentElement.scrollLeft - viewer.left) / viewer.ctx.canvas.width + this.left;
+        const y = (this.bottom - this.top) * (event.clientY + document.documentElement.scrollTop - viewer.top) / viewer.ctx.canvas.height + this.top;
         const delta = this.zoomSensitivity * event.deltaY;
         this.left -= delta * (x - this.left);
         this.right += delta * (this.right - x);

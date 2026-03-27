@@ -13,7 +13,7 @@ public static class FeatureManagerExtensions
     public static List<TreeControlItem> GetFolders(this FeatureManager manager)
     {
         List<TreeControlItem> folders = new();
-        var item = manager.GetFeatureTreeRootItem2((int)swFeatMgrPane_e.swFeatMgrPaneTop);
+        var item = manager.GetFeatureTreeRootItem2((int)swFeatMgrPane_e.swFeatMgrPaneBottom).GetFirstChild();
         while (item != null)
         {
             if (item.ObjectType != (int)swTreeControlItemType_e.swFeatureManagerItem_Feature)

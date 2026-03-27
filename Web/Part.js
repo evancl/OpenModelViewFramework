@@ -68,7 +68,7 @@ class Part extends Component
 
         transform: The exploded transform.
     */
-    setTransform(transform)
+    setTranslation(transform)
     {
         this.collapsedTransform = new Array(3);
         for (let i = 0; i < this.collapsedTransform.length; i++)

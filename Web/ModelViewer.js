@@ -18,21 +18,21 @@ class ModelViewer
         this.light = light;
         this.hiddenComponents = new LinkedList();
         this.visibleComponents = new LinkedList();
-        const viewer = document.querySelector("#model-viewer");
+        this.viewer = document.querySelector("#model-viewer");
         var self = this;
-        viewer.addEventListener("wheel", (event) => { self.onZoom(self, event); });
-        viewer.addEventListener("mousemove", (event) => { self.onRotate(self, event); });
-        viewer.addEventListener("mousedown", (event) => { self.onStartRotate(self, event); });
-        viewer.addEventListener("mouseup", (event) => { self.onStopRotate(self); });
+        this.viewer.addEventListener("wheel", (event) => { self.onZoom(self, event); });
+        this.viewer.addEventListener("mousemove", (event) => { self.onRotate(self, event); });
+        this.viewer.addEventListener("mousedown", (event) => { self.onStartRotate(self, event); });
+        this.viewer.addEventListener("mouseup", (event) => { self.onStopRotate(self); });
         this.isRotating = false;
         this.cursorX = 0.0;
         this.cursorY = 0.0;
-        this.ctx = viewer.getContext("webgl2", { antialias: true });
+        this.ctx = this.viewer.getContext("webgl2", { antialias: true });
         if (this.ctx === null)
             throw new Error("ModelViewer.constructor error: Failed to initialize viewer.");
-        const props = viewer.getBoundingClientRect();
-        this.left = props.left;
-        this.top = props.top;
+        const props = this.viewer.getBoundingClientRect();
+        this.left = props.left + document.documentElement.scrollLeft;
+        this.top = props.top + document.documentElement.scrollTop;
         this.ctx.canvas.width = props.width;
         this.ctx.canvas.height = props.height;
         this.ctx.viewport(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -111,7 +111,7 @@ class ModelViewer
                 {
                     const component = this.assemblyData.steps[i].components[j];
                     if (component.transform != null)
-                        this.root.getChild(component.name).setTransform(component.transform);
+                        this.root.getChild(component.name).setTranslation(component.transform);
                 }
                 if (this.assemblyData.steps[i].lines != null)
                 {
@@ -345,6 +345,9 @@ class ModelViewer
     onZoom(self, event)
     {
         event.preventDefault();
+        const props = self.viewer.getBoundingClientRect();
+        self.left = props.left + document.documentElement.scrollLeft;
+        self.top = props.top + document.documentElement.scrollTop;
         self.camera.zoomCamera(self, event);
         self.ctx.uniformMatrix4fv(
             self.projection,
@@ -437,7 +440,7 @@ class ModelViewer
             this.ctx.drawArrays(this.ctx.TRIANGLES, 0, this.models[node.value.id].length / 6);
             node = node.next;
         }
-        if (this.isExploded)
+        if (this.isExploded && this.assemblyData.steps[this.assemblyStep].lines != null)
         {
             for (let i = 0; i < this.assemblyData.steps[this.assemblyStep].lines.length; i++)
             {
