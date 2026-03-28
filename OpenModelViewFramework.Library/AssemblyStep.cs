@@ -1,4 +1,7 @@
+using System.Collections;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static System.BitConverter;
 
 namespace OpenModelViewFramework.Library;
@@ -9,7 +12,7 @@ public class AssemblyStep
     Line[] _Lines;
     List<AssemblyStepComponent> _Components;
     // Name of the assembly step.
-    string Name
+    public string Name
     {
         get
         {
@@ -26,7 +29,7 @@ public class AssemblyStep
         }
     }
     // Explode line list.
-    Line[] Lines
+    public Line[] Lines
     {
         get
         {
@@ -40,7 +43,7 @@ public class AssemblyStep
         }
     }
     // Components in the assembly step.
-    List<AssemblyStepComponent> Components
+    public List<AssemblyStepComponent> Components
     {
         get
         {
@@ -56,6 +59,31 @@ public class AssemblyStep
         }
     }
 
+    internal AssemblyStep(byte[] data, ref int index)
+    {
+        var length = data[index];
+        index++;
+        Name = Encoding.UTF8.GetString(data, index, length);
+        index += length;
+        var count = ToInt16(data, index);
+        index += 2;
+        if (count == 0)
+            Lines = null;
+        else
+        {
+            Lines = new Line[count];
+            for (var i = 0; i < Lines.Length; i++)
+                Lines[i] = new Line(data, ref index);
+        }
+        count = ToInt16(data, index);
+        index += 2;
+        var components = new List<AssemblyStepComponent>();
+        for (var i = 0; i < count; i++)
+            components.Add(new AssemblyStepComponent(data, ref index));
+        Components = components;
+    }
+
+    [JsonConstructor]
     public AssemblyStep(string name, Line[] lines, List<AssemblyStepComponent> components)
     {
         Name = name;

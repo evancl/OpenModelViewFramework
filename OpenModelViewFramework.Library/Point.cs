@@ -1,14 +1,16 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static System.BitConverter;
 
 namespace OpenModelViewFramework.Library;
 
 public class Point
 {
-    float _X;
-    float _Y;
-    float _Z;
+    double _X;
+    double _Y;
+    double _Z;
     // X coordinate.
-    float X
+    public double X
     {
         get
         {
@@ -22,7 +24,7 @@ public class Point
         }
     }
     // Y coordinate.
-    float Y
+    public double Y
     {
         get
         {
@@ -36,7 +38,7 @@ public class Point
         }
     }
     // Z coordinate.
-    float Z
+    public double Z
     {
         get
         {
@@ -50,11 +52,29 @@ public class Point
         }
     }
 
+    internal Point(byte[] data, ref int index)
+    {
+        X = ToSingle(data, index);
+        index += 4;
+        Y = ToSingle(data, index);
+        index += 4;
+        Z = ToSingle(data, index);
+        index += 4;
+    }
+
     public Point(float[] point)
     {
         X = point[0];
         Y = point[1];
         Z = point[2];
+    }
+
+    [JsonConstructor]
+    public Point(double x, double y, double z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
     }
     /*
         Gets the binary representation of the point.
@@ -63,8 +83,8 @@ public class Point
     */
     internal void GetBinaryRep(List<byte> data)
     {
-        data.AddRange(GetBytes(X));
-        data.AddRange(GetBytes(Y));
-        data.AddRange(GetBytes(Z));
+        data.AddRange(GetBytes((float)X));
+        data.AddRange(GetBytes((float)Y));
+        data.AddRange(GetBytes((float)Z));
     }
 }

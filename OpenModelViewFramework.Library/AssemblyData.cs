@@ -1,12 +1,14 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static System.BitConverter;
 
 namespace OpenModelViewFramework.Library;
 
 public class AssemblyData
 {
-    byte _LineStyle;
-    byte _LineThickness;
-    byte[] _Properties;
+    int _LineStyle;
+    int _LineThickness;
+    int[] _Properties;
     AssemblyStep[] _Steps;
     /*
         Explode line style.
@@ -14,7 +16,7 @@ public class AssemblyData
         0: Solid
         1: Dashed
     */
-    public byte LineStyle
+    public int LineStyle
     {
         get
         {
@@ -28,7 +30,7 @@ public class AssemblyData
         }
     }
     // Explode line thickness.
-    public byte LineThickness
+    public int LineThickness
     {
         get
         {
@@ -49,7 +51,7 @@ public class AssemblyData
         2: B (0 - 255)
         3: S (0 - 255)
     */
-    public byte[] Properties
+    public int[] Properties
     {
         get
         {
@@ -69,7 +71,7 @@ public class AssemblyData
     {
         get
         {
-            return _Steps;   
+            return _Steps;
         }
         set
         {
@@ -81,12 +83,34 @@ public class AssemblyData
         }
     }
 
-    public AssemblyData(byte lineStyle, byte lineThickness, byte[] properties, int steps)
+    public AssemblyData(string name)
+    {
+        var data = File.ReadAllBytes($"{System.IO.Directory.GetCurrentDirectory()}\\{name}.adata");
+        var index = 0;
+        LineStyle = data[index];
+        index++;
+        LineThickness = data[index];
+        index++;
+        Properties = new int[4];
+        for (var i = 0; i < 4; i++)
+        {
+            Properties[i] = data[index];
+            index++;
+        }
+        var count = ToInt16(data, index);
+        index += 2;
+        Steps = new AssemblyStep[count];
+        for (var i = 0; i < count; i++)
+            Steps[i] = new AssemblyStep(data, ref index);
+    }
+
+    [JsonConstructor]
+    public AssemblyData(int lineStyle, int lineThickness, int[] properties, AssemblyStep[] steps)
     {
         LineStyle = lineStyle;
         LineThickness = lineThickness;
         Properties = properties;
-        Steps = new AssemblyStep[steps];
+        Steps = steps;
     }
     /*
         Gets the binary representation of the assembly data instance.
@@ -95,15 +119,15 @@ public class AssemblyData
     */
     void GetBinaryRep(List<byte> data)
     {
-        data.Add(LineStyle);
-        data.Add(LineThickness);
-        data.AddRange(Properties);
+        data.Add((byte)LineStyle);
+        data.Add((byte)LineThickness);
+        data.AddRange(Properties.Select(i => (byte)i).ToArray());
         data.AddRange(GetBytes((short)Steps.Length));
         foreach (var step in Steps)
             step.GetBinaryRep(data);
     }
     /*
-        Creates an adata file in the current working directory.
+        Creates an adata file with the given name in the current working directory.
 
         name: The file name to use.
     */
@@ -112,5 +136,17 @@ public class AssemblyData
         List<byte> data = new();
         GetBinaryRep(data);
         File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}\\{name}.adata", data.ToArray());
+    }
+    /*
+        Creates an adata file with the given name in the current working directory.
+
+        jsonFileName: The json file name to use.
+        assemblyDataFileName: The assembly data file name to use.
+    */
+    public static void CreateFile(string jsonFileName, string assemblyDataFileName)
+    {
+        var json = File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}\\{jsonFileName}.json");
+        var assemblyData = JsonSerializer.Deserialize<AssemblyData>(json);
+        assemblyData.CreateFile(assemblyDataFileName);
     }
 }

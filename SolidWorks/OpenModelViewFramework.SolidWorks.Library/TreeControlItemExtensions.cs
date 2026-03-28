@@ -44,4 +44,26 @@ public static class TreeContolItemExtensions
         }
         return components;
     }
+    /*
+        Gets the tree control item with the given name.
+
+        parent: The tree control item to use.
+        name: The tree control item name.
+    */
+    public static TreeControlItem GetItem(this TreeControlItem parent, string name)
+    {
+        if (parent.Text == name)
+            return parent;
+        var child = parent.GetFirstChild();
+        if (child == null)
+            return null;
+        while (child != null)
+        {
+            var result = child.GetItem(name);
+            if (result != null)
+                return result;
+            child = child.GetNext();
+        }
+        return null;
+    }
 }

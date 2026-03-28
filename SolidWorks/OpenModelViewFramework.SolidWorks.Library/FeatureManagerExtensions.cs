@@ -9,13 +9,15 @@ public static class FeatureManagerExtensions
         Gets the folders in the feature tree.
 
         manager: The feature manager to use.
+        location: The feature manager pane to use.
     */
-    public static List<TreeControlItem> GetFolders(this FeatureManager manager)
+    public static List<TreeControlItem> GetFolders(this FeatureManager manager, swFeatMgrPane_e location)
     {
         List<TreeControlItem> folders = new();
-        var item = manager.GetFeatureTreeRootItem2((int)swFeatMgrPane_e.swFeatMgrPaneBottom).GetFirstChild();
+        var item = manager.GetFeatureTreeRootItem2((int)location).GetFirstChild();
         while (item != null)
         {
+            Console.WriteLine(item.Text);
             if (item.ObjectType != (int)swTreeControlItemType_e.swFeatureManagerItem_Feature)
             {
                 item = item.GetNext();
@@ -31,5 +33,17 @@ public static class FeatureManagerExtensions
             item = item.GetNext();
         }
         return folders;
+    }
+    /*
+        Gets the tree control item with the given name in the feature tree.
+
+        manager: The feature manager to use.
+        location: The feature manager pane to use.
+        name: The tree control item name.
+    */
+    public static TreeControlItem GetItem(this FeatureManager manager, swFeatMgrPane_e location, string name)
+    {
+        var root = manager.GetFeatureTreeRootItem2((int)location);
+        return root.GetItem(name);
     }
 }

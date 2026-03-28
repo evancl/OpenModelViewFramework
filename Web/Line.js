@@ -59,7 +59,7 @@ class Line
             end[1] - start[1],
             end[2] - start[2]
         );
-        n0 = vec3.normalize(n0);
+        n0 = vec3.normalize(n0, n0);
         let d0 = vec3.create();
         if (n0[0] == 0)
             d0[0] = 1;
@@ -87,25 +87,28 @@ class Line
                 d0[1] = 1;
                 d0[2] = (-n0[1] - n0[0]) / n0[2];
             }
-            d0 = vec3.normalize(d0);
+            d0 = vec3.normalize(d0, d0);
         }
-        d0 = vec3.scale(d0, lineThickness);
-        let matrix = mat4.fromRotation(.25 * Math.PI, n0);
-        const n1 = vec3.transformMat4(d0, matrix);
-        matrix = mat4.rotate(matrix, .25 * Math.PI, n0);
-        const d1 = vec3.transformMat4(d0, matrix);
-        matrix = mat4.rotate(matrix, .25 * Math.PI, n0);
-        const n2 = vec3.transformMat4(d0, matrix);
-        const d2 = vec3.scale(d0, -1);
-        const d3 = vec3.scale(d1, -1);
-        const p0 = vec3.add(end, d0);
-        const p1 = vec3.add(end, d1);
-        const p2 = vec3.add(end, d2);
-        const p3 = vec3.add(end, d3);
-        const p4 = vec3.add(start, d0);
-        const p5 = vec3.add(start, d1);
-        const p6 = vec3.add(start, d2);
-        const p7 = vec3.add(start, d3);
+        d0 = vec3.scale(d0, d0, lineThickness * .005 * .254);
+        let matrix = mat4.create();
+        matrix = mat4.fromRotation(matrix, .25 * Math.PI, n0);
+        let n1 = vec3.create();
+        n1 = vec3.transformMat4(n1, d0, matrix);
+        matrix = mat4.rotate(matrix, matrix, .25 * Math.PI, n0);
+        let d1 = vec3.create();
+        d1 = vec3.transformMat4(d1, d0, matrix);
+        matrix = mat4.rotate(matrix, matrix, .25 * Math.PI, n0);
+        const n2 = vec3.transformMat4(vec3.create(), d0, matrix);
+        const d2 = vec3.scale(vec3.create(), d0, -1);
+        const d3 = vec3.scale(vec3.create(), d1, -1);
+        const p0 = vec3.add(vec3.create(), end, d0);
+        const p1 = vec3.add(vec3.create(), end, d1);
+        const p2 = vec3.add(vec3.create(), end, d2);
+        const p3 = vec3.add(vec3.create(), end, d3);
+        const p4 = vec3.add(vec3.create(), start, d0);
+        const p5 = vec3.add(vec3.create(), start, d1);
+        const p6 = vec3.add(vec3.create(), start, d2);
+        const p7 = vec3.add(vec3.create(), start, d3);
         let index = 0;
         // End face.
         let points =
@@ -128,7 +131,7 @@ class Line
             p6,
             p7
         ];
-        index = this.createFace(index, points, vec3.scale(n0, -1));
+        index = this.createFace(index, points, vec3.scale(n0, n0, -1));
         // Top face.
         points =
         [
@@ -150,7 +153,7 @@ class Line
             p2,
             p3
         ];
-        index = this.createFace(index, points, vec3.scale(n1, -1));
+        index = this.createFace(index, points, vec3.scale(n1, n1, -1));
         // Right face.
         points =
         [
@@ -172,7 +175,7 @@ class Line
             p0,
             p3
         ];
-        this.createFace(index, points, vec3.scale(n2, -1));
+        this.createFace(index, points, vec3.scale(n2, n2, -1));
     }
     /*
         Creates a planar face using the given parameters.
@@ -199,6 +202,6 @@ class Line
     add(index, point)
     {
         for (let i = 0; i < 3; i++)
-            this.model[index + i] = list[i];
+            this.model[index + i] = point[i];
     }
 }

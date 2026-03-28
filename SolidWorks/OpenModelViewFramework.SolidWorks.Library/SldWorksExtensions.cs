@@ -50,17 +50,18 @@ public static class SldWorksExtensions
             throw new Exception($"SldWorks.CreateAssemblyData error: Failed to activate {name}. Errors: {errors}.");
         var config = document.ConfigurationManager.ActiveConfiguration;
         var assembly = (AssemblyDoc)document;
-        var viewNames = (string[])assembly.GetExplodedViewNames2(config.Name);
-        var folders = document.FeatureManager.GetFolders();
+        document.Extension.HideFeatureManager(false);
+        var folders = document.FeatureManager.GetFolders(swFeatMgrPane_e.swFeatMgrPaneTop);
         if (folders.Count == 0)
             throw new Exception($"SldWorks.CreateAssemblyData error: No folders were found in {name}.");
-        var data = new AssemblyData(0, 1, new byte[4], folders.Count);
+        var viewNames = (string[])assembly.GetExplodedViewNames2(config.Name);
+        var data = new AssemblyData(0, 1, new int[4], new AssemblyStep[folders.Count]);
         for (var i = 0; i < folders.Count; i++)
         {
             var item = folders[i];
             name = ((Feature)item.Object).Name;
             List<AssemblyStepComponent> components;
-            if (viewNames.Contains(name))
+            if (viewNames != null && viewNames.Contains(name))
             {
                 assembly.ShowExploded2(true, name);
                 components = item.GetAssemblyComponents(document, true);

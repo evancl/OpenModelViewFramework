@@ -14,22 +14,11 @@ public static class ModelDoc2Extensions
     */
     public static Line[] GetExplodeLines(this ModelDoc2 document, string name)
     {
-        var isSelected = document.Extension.SelectByID2(
-            $"{name} Routes",
-            "SKETCH",
-            0,
-            0,
-            0,
-            true,
-            -1,
-            null,
-            (int)swSelectOption_e.swSelectOptionDefault
-        );
-        if (!isSelected)
-            throw new Exception($"ModelDoc2.GetExplodeLines error: Failed to select {name} Routes in {document.GetPathName()}.");
-        var manager = (SelectionMgr)document.SelectionManager;
-        var feature = (Feature)manager.GetSelectedObject6(1, -1);
-        document.ClearSelection2(true);
+        name = $"{name} Routes";
+        var item = document.FeatureManager.GetItem(swFeatMgrPane_e.swFeatMgrPaneBottom, name);
+        if (item == null)
+            return null;
+        var feature = (Feature)item.Object;
         var sketch = (Sketch)feature.GetSpecificFeature2();
         var segments = (object[])sketch.GetSketchSegments();
         var lines = new Line[segments.Length];

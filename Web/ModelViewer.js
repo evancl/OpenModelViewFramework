@@ -446,7 +446,7 @@ class ModelViewer
             {
                 const line = this.assemblyData.steps[this.assemblyStep].lines[i];
                 this.ctx.bindVertexArray(line.vertexArray);
-                this.ctx.uniform4fv(
+                this.ctx.uniformMatrix4fv(
                     this.model,
                     false,
                     this.rootTransform

@@ -28,6 +28,11 @@ class App
                     CreateProcess();
                     Instance.CreateAssemblyData(args[1]).CreateFile(Path.GetFileNameWithoutExtension(args[1]));
                     break;
+                case "-ad-json":
+                    if (args.Length != 3)
+                        throw new Exception("App.Run error: Invalid number of arguments.");
+                    AssemblyData.CreateFile(args[1], args[2]);
+                    break;
                 case "-cd":
                     if (args.Length != 2)
                         throw new Exception("App.Run error: Invalid number of arguments.");
@@ -82,6 +87,7 @@ class App
         {
             Console.WriteLine("Usage:\n");
             Console.WriteLine("-ad <name.sldprt | name.sldasm>: Creates an assembly data file (.adata) using the specified model file.");
+            Console.WriteLine("-ad-json <json file name> <name>: Creates an assembly data file (.adata) using <json file name> and the specified name.");
             Console.WriteLine("-cd <name>: Creates a component data file (.cdata) using the specified name and every stl file in the current folder.");
             Console.WriteLine("-ct <name.sldprt | name.sldasm> <property>: Creates a component tree file (.ctree) using the specified model file and property.");
             Console.WriteLine("-stl <property>: Generates a stereolithography file (.stl) for every configuration of each part in the current folder filtered by the specified property.");

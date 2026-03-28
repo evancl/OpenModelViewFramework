@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static System.BitConverter;
 
 namespace OpenModelViewFramework.Library;
@@ -8,7 +10,7 @@ public class AssemblyStepComponent
     string _Name;
     float[] _Transform;
     // Name of the component.
-    string Name
+    public string Name
     {
         get
         {
@@ -29,7 +31,7 @@ public class AssemblyStepComponent
     
         Δx, Δy, Δz
     */
-    float[] Transform
+    public float[] Transform
     {
         get
         {
@@ -51,6 +53,29 @@ public class AssemblyStepComponent
         }
     }
 
+    internal AssemblyStepComponent(byte[] data, ref int index)
+    {
+        var length = data[index];
+        index++;
+        Name = Encoding.UTF8.GetString(data, index, length);
+        index += length;
+        var hasTransform = data[index] == 1;
+        index++;
+        if (!hasTransform)
+            Transform = null;
+        else
+        {
+            var transform = new float[3];
+            for (var i = 0; i < 3; i++)
+            {
+                transform[i] = ToSingle(data, index);
+                index += 4;
+            }
+            Transform = transform;
+        }
+    }
+
+    [JsonConstructor]
     public AssemblyStepComponent(string name, float[] transform)
     {
         Name = name;
@@ -67,10 +92,10 @@ public class AssemblyStepComponent
         data.Add((byte)bytes.Length);
         data.AddRange(bytes);
         if (Transform == null)
-            data.Add((byte)0);
+            data.Add(0);
         else
         {
-            data.Add((byte)1);
+            data.Add(1);
             for (var i = 0; i < Transform.Length; i++)
                 data.AddRange(GetBytes(Transform[i]));
         }
