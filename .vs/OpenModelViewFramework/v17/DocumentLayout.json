@@ -3,18 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BA5C22C6-C61A-426E-BF91-CBB584916BEE}|SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\OpenModelViewFramework.SolidWorks.Library.csproj|c:\\users\\evan closs\\documents\\projects\\drafting extensions\\openmodelviewframework\\solidworks\\openmodelviewframework.solidworks.library\\modeldocextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BA5C22C6-C61A-426E-BF91-CBB584916BEE}|SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\OpenModelViewFramework.SolidWorks.Library.csproj|solutionrelative:solidworks\\openmodelviewframework.solidworks.library\\modeldocextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}|OpenModelViewFramework.Library\\OpenModelViewFramework.Library.csproj|c:\\users\\evan closs\\documents\\projects\\drafting extensions\\openmodelviewframework\\openmodelviewframework.library\\point.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}|OpenModelViewFramework.Library\\OpenModelViewFramework.Library.csproj|solutionrelative:openmodelviewframework.library\\point.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}|OpenModelViewFramework.Library\\OpenModelViewFramework.Library.csproj|c:\\users\\evan closs\\documents\\projects\\drafting extensions\\openmodelviewframework\\openmodelviewframework.library\\assemblydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}|OpenModelViewFramework.Library\\OpenModelViewFramework.Library.csproj|solutionrelative:openmodelviewframework.library\\assemblydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{93CB192F-0BE0-4BC5-ABE9-FDA975324093}|SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\OpenModelViewFramework.SolidWorks.Util.csproj|c:\\users\\evan closs\\documents\\projects\\drafting extensions\\openmodelviewframework\\solidworks\\openmodelviewframework.solidworks.util\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{93CB192F-0BE0-4BC5-ABE9-FDA975324093}|SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\OpenModelViewFramework.SolidWorks.Util.csproj|solutionrelative:solidworks\\openmodelviewframework.solidworks.util\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -31,51 +19,12 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ModelDocExtensions.cs",
-              "DocumentMoniker": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\ModelDocExtensions.cs",
-              "RelativeDocumentMoniker": "SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\ModelDocExtensions.cs",
-              "ToolTip": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\ModelDocExtensions.cs",
-              "RelativeToolTip": "SolidWorks\\OpenModelViewFramework.SolidWorks.Library\\ModelDocExtensions.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAACAAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-28T00:49:09.061Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Point.cs",
-              "DocumentMoniker": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\OpenModelViewFramework.Library\\Point.cs",
-              "RelativeDocumentMoniker": "OpenModelViewFramework.Library\\Point.cs",
-              "ToolTip": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\OpenModelViewFramework.Library\\Point.cs",
-              "RelativeToolTip": "OpenModelViewFramework.Library\\Point.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-28T00:46:07.683Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AssemblyData.cs",
-              "DocumentMoniker": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\OpenModelViewFramework.Library\\AssemblyData.cs",
-              "RelativeDocumentMoniker": "OpenModelViewFramework.Library\\AssemblyData.cs",
-              "ToolTip": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\OpenModelViewFramework.Library\\AssemblyData.cs",
-              "RelativeToolTip": "OpenModelViewFramework.Library\\AssemblyData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-28T00:20:00.243Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "App.cs",
               "DocumentMoniker": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
               "RelativeDocumentMoniker": "SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
               "ToolTip": "C:\\Users\\Evan Closs\\Documents\\Projects\\Drafting Extensions\\OpenModelViewFramework\\SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
               "RelativeToolTip": "SolidWorks\\OpenModelViewFramework.SolidWorks.Util\\App.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAACEAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-28T00:02:24.365Z",
               "EditorCaption": ""

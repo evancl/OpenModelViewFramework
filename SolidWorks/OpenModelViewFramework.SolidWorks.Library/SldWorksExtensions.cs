@@ -13,7 +13,7 @@ public static class SldWorksExtensions
     /*
         Creates an assembly data instance using the model with the given file name.
 
-        app: The SOLIDWORKS application.
+        app: The SolidWorks application.
         name: The file name.
     */
     public static AssemblyData CreateAssemblyData(this SldWorks app, string name)
@@ -77,7 +77,7 @@ public static class SldWorksExtensions
     /*
         Creates an stl file for every configuration of each filtered part in the current folder.
 
-        app: The SOLIDWORKS application.
+        app: The SolidWorks application.
         property: The name of the document property that determines if an stl file should be exported. The property should resolve to "Yes" or "No".
     */
     public static void ExportStlFiles(this SldWorks app, string property)
@@ -151,7 +151,7 @@ public static class SldWorksExtensions
     /*
         Checks if the file is open.
 
-        app: The SOLIDWORKS application.
+        app: The SolidWorks application.
         path: The path of the file.
     */
     private static bool IsOpen(this SldWorks app, string path)
@@ -167,7 +167,7 @@ public static class SldWorksExtensions
     /*
         Gets the default transform.
 
-        app: The SOLIDWORKS application.
+        app: The SolidWorks application.
     */
     private static MathTransform GetDefaultTransform(this SldWorks app)
     {
@@ -212,7 +212,7 @@ public static class SldWorksExtensions
     /*
         Creates a component tree using the model with the given file name.
 
-        app: The SOLIDWORKS application.
+        app: The SolidWorks application.
         name: The file name.
         property: The name of the document property that determines if an stl file should be referenced. The property should resolve to "Yes" or "No".
     */
@@ -276,7 +276,7 @@ public static class SldWorksExtensions
     /*
         Creates a component tree by traversing the model's component tree.
 
-        app: The SOLIDWORKS application.
+        app: The SolidWorks application.
         document: The model document.
         files: The stl file names sorted in ascending order.
         componentPath: The component path relative to the root.
