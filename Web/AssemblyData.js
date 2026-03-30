@@ -17,6 +17,9 @@ class AssemblyData
         // Explode line style.
         this.lineStyle = AssemblyData.view.getUint8(AssemblyData.index, true);
         AssemblyData.index++;
+        // Explode line length.
+        this.lineLength = AssemblyData.view.getUint8(AssemblyData.index, true);
+        AssemblyData.index++;
         // Explode line thickness.
         this.lineThickness = AssemblyData.view.getUint8(AssemblyData.index, true);
         AssemblyData.index++;
@@ -37,7 +40,19 @@ class AssemblyData
         // Assembly steps.
         this.steps = new Array(AssemblyData.view.getInt16(AssemblyData.index, true));
         AssemblyData.index += 2;
+        // Line segment that contains the base geometry.
+        this.lineSegment = new LineSegment(this.lineLength, this.lineThickness, 36);
         for (let i = 0; i < this.steps.length; i++)
-            this.steps[i] = new AssemblyStep(this.lineStyle, this.lineThickness);
+            this.steps[i] = new AssemblyStep();
+    }
+    /*
+        Updates the line geometry after zooming.
+
+        thicknessScale: The thickness scale to use.
+    */
+    updateLines(thicknessScale)
+    {
+        for (let i = 0; i < this.steps.length; i++)
+            this.steps[i].updateLines(this, thicknessScale);
     }
 }

@@ -7,6 +7,7 @@ namespace OpenModelViewFramework.Library;
 public class AssemblyData
 {
     int _LineStyle;
+    int _LineLength;
     int _LineThickness;
     int[] _Properties;
     AssemblyStep[] _Steps;
@@ -24,9 +25,23 @@ public class AssemblyData
         }
         set
         {
-            if (value > 1)
-                throw new ArgumentOutOfRangeException("AssemblyData.LineStyle must be less than or equal to 1.");
+            if (value < 0 || value > 1)
+                throw new ArgumentOutOfRangeException("AssemblyData.LineStyle must be between 0 and 1 inclusive.");
             _LineStyle = value;
+        }
+    }
+    // Explode line length.
+    public int LineLength
+    {
+        get
+        {
+            return _LineLength;
+        }
+        set
+        {
+            if (value < 1 || value > 10)
+                throw new ArgumentOutOfRangeException("AssemblyData.LineLength must be between 1 and 10 inclusive.");
+            _LineLength = value;
         }
     }
     // Explode line thickness.
@@ -38,8 +53,8 @@ public class AssemblyData
         }
         set
         {
-            if (value == 0)
-                throw new ArgumentOutOfRangeException("AssemblyData.LineThickness must be greater than 0.");
+            if (value < 1 || value > 10)
+                throw new ArgumentOutOfRangeException("AssemblyData.LineThickness must be between 1 and 10 inclusive.");
             _LineThickness = value;
         }
     }
@@ -63,6 +78,11 @@ public class AssemblyData
                 throw new ArgumentNullException("AssemblyData.Properties cannot be null.");
             else if (value.Length != 4)
                 throw new ArgumentOutOfRangeException("AssemblyData.Properties length must be 4.");
+            for (var i = 0; i < value.Length; i++)
+            {
+                if (value[i] < 0 || value[i] > 255)
+                   throw new ArgumentOutOfRangeException("AssemblyData.Properties elements must be between 0 and 255 inclusive."); 
+            }
             _Properties = value;
         }
     }
@@ -89,6 +109,8 @@ public class AssemblyData
         var index = 0;
         LineStyle = data[index];
         index++;
+        LineLength = data[index];
+        index++;
         LineThickness = data[index];
         index++;
         Properties = new int[4];
@@ -105,9 +127,10 @@ public class AssemblyData
     }
 
     [JsonConstructor]
-    public AssemblyData(int lineStyle, int lineThickness, int[] properties, AssemblyStep[] steps)
+    public AssemblyData(int lineStyle, int lineLength, int lineThickness, int[] properties, AssemblyStep[] steps)
     {
         LineStyle = lineStyle;
+        LineLength = lineLength;
         LineThickness = lineThickness;
         Properties = properties;
         Steps = steps;
@@ -120,6 +143,7 @@ public class AssemblyData
     void GetBinaryRep(List<byte> data)
     {
         data.Add((byte)LineStyle);
+        data.Add((byte)LineLength);
         data.Add((byte)LineThickness);
         data.AddRange(Properties.Select(i => (byte)i).ToArray());
         data.AddRange(GetBytes((short)Steps.Length));

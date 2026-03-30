@@ -118,6 +118,10 @@ class ModelViewer
                     for (let j = 0; j < this.assemblyData.steps[i].lines.length; j++)
                     {
                         const line = this.assemblyData.steps[i].lines[j];
+                        if (this.assemblyData.lineStyle == 0)
+                            line.createSolidLine(this.camera, this.assemblyData);
+                        else if (this.assemblyData.lineStyle == 1)
+                            line.createDashedLine(this.camera, this.assemblyData);
                         line.vertexArray = this.ctx.createVertexArray();
                         this.ctx.bindVertexArray(line.vertexArray);
                         line.vertexBuffer = this.ctx.createBuffer();
@@ -348,7 +352,14 @@ class ModelViewer
         const props = self.viewer.getBoundingClientRect();
         self.left = props.left + document.documentElement.scrollLeft;
         self.top = props.top + document.documentElement.scrollTop;
+        const left = self.camera.left;
+        const right = self.camera.right;
         self.camera.zoomCamera(self, event);
+        if (self.isExploded)
+        {
+            const thicknessScale = .01 * (camera.right - camera.left) / (right - left);
+            self.assemblyData.updateLines(thicknessScale);
+        }
         self.ctx.uniformMatrix4fv(
             self.projection,
             false,
@@ -446,14 +457,17 @@ class ModelViewer
             {
                 const line = this.assemblyData.steps[this.assemblyStep].lines[i];
                 this.ctx.bindVertexArray(line.vertexArray);
-                this.ctx.uniformMatrix4fv(
-                    this.model,
-                    false,
-                    this.rootTransform
-                );
                 this.ctx.uniform4fv(this.properties, this.assemblyData.properties);
-                // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
-                this.ctx.drawArrays(this.ctx.TRIANGLES, 0, line.model.length / 6);
+                for (let j = 0; j < line.transforms.length; j++)
+                {
+                    this.ctx.uniformMatrix4fv(
+                        this.model,
+                        false,
+                        line.transform[i]
+                    );
+                    // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
+                    this.ctx.drawArrays(this.ctx.TRIANGLES, 0, line.model.length / 6);
+                }
             }
         }
     }

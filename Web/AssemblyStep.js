@@ -1,12 +1,6 @@
 class AssemblyStep
 {
-    /*
-        Class constructor.
-
-        lineStyle: Explode line style.
-        lineThickness: Explode line thickness.
-    */
-    constructor(lineStyle, lineThickness)
+    constructor()
     {
         const length = AssemblyData.view.getUint8(AssemblyData.index, true);
         AssemblyData.index++;
@@ -24,12 +18,25 @@ class AssemblyStep
         {
             this.lines = new Array(count);
             for (let i = 0; i < this.lines.length; i++)
-                this.lines[i] = new Line(lineStyle, lineThickness);
+                this.lines[i] = new Line();
         }
         // Components in the assembly step.
         this.components = new Array(AssemblyData.view.getInt16(AssemblyData.index, true));
         AssemblyData.index += 2;
         for (let i = 0; i < this.components.length; i++)
             this.components[i] = new AssemblyStepComponent();
+    }
+    /*
+        Updates the line geometry after zooming.
+
+        assemblyData: The assembly data that contains the base line geometry.
+        thicknessScale: The thickness scale to use.
+    */
+    updateLines(assemblyData, thicknessScale)
+    {
+        if (this.lines == null)
+            return;
+        for (let i = 0; i < this.lines.length; i++)
+            this.lines[i].createLine(assemblyData, thicknessScale);
     }
 }

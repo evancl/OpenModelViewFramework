@@ -27,7 +27,7 @@ class LineSegment
 
     createEndTriangle(index, y)
     {
-        const indices = [ index, index == this.numberOfTriangles - 1 ? 0 : index + 1 ];
+        const indices = [index, index == this.numberOfTriangles - 1 ? 0 : index + 1];
         let triangle = new Array(3);
         for (let i = 0; i < 2; i++)
         {
@@ -45,7 +45,7 @@ class LineSegment
 
     createSideTriangles(index, y0, y1, useFirst)
     {
-        const indices = [ index, index == this.numberOfTriangles - 1 ? 0 : index + 1 ];
+        const indices = [index, index == this.numberOfTriangles - 1 ? 0 : index + 1];
         let triangle = new Array(3);
         for (let i = 0; i < 2; i++)
         {
@@ -87,9 +87,9 @@ class LineSegment
         const length = this.numberOfTriangles * 4 * 3 * 6;
         this.model = new Float32Array(length);
         let modelIndex = 0;
-        let vector = [ 0, -1, 0 ];
+        let vector = [0, -1, 0];
         modelIndex = this.writeData(0, this.numberOfTriangles, modelIndex, vector);
-        vector = [ 0, 1, 0 ];
+        vector = [0, 1, 0];
         modelIndex = this.writeData(this.numberOfTriangles, this.numberOfTriangles, modelIndex, vector);
         const increment = 2 * Math.PI / this.numberOfTriangles;
         const initialAngle = increment / 2;

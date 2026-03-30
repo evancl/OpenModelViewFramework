@@ -55,7 +55,7 @@ public static class SldWorksExtensions
         if (folders.Count == 0)
             throw new Exception($"SldWorks.CreateAssemblyData error: No folders were found in {name}.");
         var viewNames = (string[])assembly.GetExplodedViewNames2(config.Name);
-        var data = new AssemblyData(0, 1, new int[4], new AssemblyStep[folders.Count]);
+        var data = new AssemblyData(0, 5, 1, new int[4], new AssemblyStep[folders.Count]);
         for (var i = 0; i < folders.Count; i++)
         {
             var item = folders[i];
