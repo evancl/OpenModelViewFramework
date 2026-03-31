@@ -20,7 +20,7 @@ class AssemblyStepComponent
             this.transform = null;
         else
         {
-            this.transform = new Array(3);
+            this.transform = new Float32Array(3);
             for (let i = 0; i < 3; i++)
             {
                 this.transform[i] = AssemblyData.view.getFloat32(AssemblyData.index, true);

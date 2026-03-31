@@ -39,8 +39,8 @@ public class AssemblyData
         }
         set
         {
-            if (value < 1 || value > 10)
-                throw new ArgumentOutOfRangeException("AssemblyData.LineLength must be between 1 and 10 inclusive.");
+            if (value < 1 || value > 50)
+                throw new ArgumentOutOfRangeException("AssemblyData.LineLength must be between 1 and 50 inclusive.");
             _LineLength = value;
         }
     }

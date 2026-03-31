@@ -70,7 +70,7 @@ class Part extends Component
     */
     setTranslation(transform)
     {
-        this.collapsedTransform = new Array(3);
+        this.collapsedTransform = new Float32Array(3);
         for (let i = 0; i < this.collapsedTransform.length; i++)
             this.collapsedTransform[i] = this.transform[i + 12];
         this.explodedTransform = transform;

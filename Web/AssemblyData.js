@@ -41,7 +41,7 @@ class AssemblyData
         this.steps = new Array(AssemblyData.view.getInt16(AssemblyData.index, true));
         AssemblyData.index += 2;
         // Line segment that contains the base geometry.
-        this.lineSegment = new LineSegment(this.lineLength, this.lineThickness, 36);
+        this.lineSegment = new LineSegment(36);
         for (let i = 0; i < this.steps.length; i++)
             this.steps[i] = new AssemblyStep();
     }

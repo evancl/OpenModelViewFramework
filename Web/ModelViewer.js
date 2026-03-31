@@ -25,7 +25,7 @@ class ModelViewer
         this.viewer.addEventListener("mousedown", (event) => { self.onStartRotate(self, event); });
         this.viewer.addEventListener("mouseup", (event) => { self.onStopRotate(self); });
         this.isRotating = false;
-        this.thicknessScale = (this.camera.right - this.camera.left) / 1000;
+        this.lineScale = (this.camera.right - this.camera.left) / 1000;
         this.cursorX = 0.0;
         this.cursorY = 0.0;
         this.ctx = this.viewer.getContext("webgl2", { antialias: true });
@@ -117,30 +117,7 @@ class ModelViewer
                     for (let j = 0; j < this.assemblyData.steps[i].lines.length; j++)
                     {
                         const line = this.assemblyData.steps[i].lines[j];
-                        line.vertexArray = this.ctx.createVertexArray();
-                        this.ctx.bindVertexArray(line.vertexArray);
-                        line.vertexBuffer = this.ctx.createBuffer();
                         line.createLine(this);
-                        // Normal attribute.
-                        this.ctx.vertexAttribPointer(
-                            this.vertexNormal,
-                            3,
-                            this.ctx.FLOAT,
-                            false,
-                            24,
-                            0
-                        );
-                        this.ctx.enableVertexAttribArray(this.vertexNormal);
-                        // Position attribute.
-                        this.ctx.vertexAttribPointer(
-                            this.vertexPosition,
-                            3,
-                            this.ctx.FLOAT,
-                            false,
-                            24,
-                            12
-                        );
-                        this.ctx.enableVertexAttribArray(this.vertexPosition);
                     }
                 }
             }
@@ -218,7 +195,7 @@ class ModelViewer
             this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, component.vertexBuffer);
             this.ctx.bufferData(
                 this.ctx.ARRAY_BUFFER,
-                this.models[component.id],
+                new Float32Array(this.models[component.id]),
                 this.ctx.STATIC_DRAW
             );
             // Normal attribute.
@@ -345,7 +322,7 @@ class ModelViewer
         const left = self.camera.left;
         const right = self.camera.right;
         self.camera.zoomCamera(self, event);
-        self.thicknessScale *= (self.camera.right - self.camera.left) / (right - left);
+        self.lineScale *= (self.camera.right - self.camera.left) / (right - left);
         if (self.isExploded)
             self.assemblyData.updateLines(self);
         self.ctx.uniformMatrix4fv(
@@ -365,8 +342,6 @@ class ModelViewer
     {
         if (this.assemblyData == null)
             throw new Error("ModelViewer.showAssemblyStep error: Assembly data is null.");
-        else if (!Number.isInteger(index))
-            throw new Error("ModelViewer.showAssemblyStep error: Index is not an integer.");
         else if (index < 0 || index >= this.assemblyData.steps.length)
             throw new Error(`ModelViewer.showAssemblyStep error: Index must be greater than or equal to 0 and less than ${this.assemblyData.steps.length}.`);
         else if (this.isExploded)
@@ -459,6 +434,20 @@ class ModelViewer
                     );
                     // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
                     this.ctx.drawArrays(this.ctx.TRIANGLES, 0, line.model.length / 6);
+                }
+                if (line.partial != null)
+                {
+                    this.ctx.bindVertexArray(line.partialVertexArray);
+                    line.transform[12] = line.partialTranslation[0];
+                    line.transform[13] = line.partialTranslation[1];
+                    line.transform[14] = line.partialTranslation[2];
+                    this.ctx.uniformMatrix4fv(
+                        this.model,
+                        false,
+                        line.transform
+                    );
+                    // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
+                    this.ctx.drawArrays(this.ctx.TRIANGLES, 0, line.partial.length / 6);
                 }
             }
         }

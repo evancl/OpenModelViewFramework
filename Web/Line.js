@@ -4,9 +4,13 @@ class Line
     vertexArray;
     // Vertex buffer identifier.
     vertexBuffer;
+    // Partial vertex array identifier.
+    partialVertexArray;
+    // Partial vertex buffer identifier.
+    partialVertexBuffer;
     // Line geometry data.
     model;
-
+    
     constructor()
     {
         // Explode line start point.
@@ -37,6 +41,10 @@ class Line
         // Translations for this line.
         this.translations = new Array(1);
         this.translations[0] = vec3.fromValues(start[0], start[1], start[2]);
+        // Partial geometry data.
+        this.partial = null;
+        // Partial translation for this line.
+        this.partialTranslation = vec3.create();
         if (vec3.exactEquals(y, this.path))
             this.transform = mat4.create();
         else
@@ -51,43 +59,57 @@ class Line
         Creates multiple cylinders that represent the line.
 
         assemblyData: The assembly data that contains the base line geometry.
-        thicknessScale: The thickness scale to use.
+        lineScale: The line scale to use.
     */
-    createDashedLine(assemblyData, thicknessScale)
+    createDashedLine(assemblyData, lineScale)
     {
         this.model = [...assemblyData.lineSegment.model];
-        let length = thicknessScale * assemblyData.lineLength;
-        const lengthScale = length >= this.pathLength ? this.pathLength / assemblyData.lineLength : thicknessScale;
+        let length = lineScale * assemblyData.lineLength;
+        if (length > this.pathLength)
+            length = this.pathLength;
         for (let i = 3; i < this.model.length; i += 6)
         {
-            this.model[i] *= thicknessScale;
-            this.model[i + 1] *= lengthScale;
-            this.model[i + 2] *= thicknessScale;
+            this.model[i] *= lineScale * assemblyData.lineThickness;
+            this.model[i + 1] *= length;
+            this.model[i + 2] *= lineScale * assemblyData.lineThickness;
         }
-        const numberOfSegments = Math.ceil(Math.floor(this.pathLength / (thicknessScale * assemblyData.lineLength)) / 2);
+        const numberOfSegments = Math.ceil(Math.floor(this.pathLength / (lineScale * assemblyData.lineLength)) / 2);
         if (numberOfSegments > 1)
         {
-            const factor = 2 * thicknessScale * assemblyData.lineLength;
+            const factor = 2 * lineScale * assemblyData.lineLength;
             this.translations.length = numberOfSegments;
             for (var i = 1; i < numberOfSegments; i++)
                 this.translations[i] = vec3.add(vec3.create(), this.translations[0], vec3.scale(vec3.create(), this.path, i * factor));
         }
+        const partialLength = this.pathLength - 2 * numberOfSegments * lineScale * assemblyData.lineLength;
+        if (partialLength > 0)
+        {
+            this.partial = [...assemblyData.lineSegment.model];
+            for (let i = 3; i < this.partial.length; i += 6)
+            {
+                this.partial[i] *= lineScale * assemblyData.lineThickness;
+                this.partial[i + 1] *= partialLength;
+                this.partial[i + 2] *= lineScale * assemblyData.lineThickness;
+            }
+            this.partialTranslation = vec3.scale(vec3.create(), this.path, this.pathLength - partialLength);
+        }
+        else
+            this.partial = null;
     }
     /*
         Creates a cylinder that represents the line.
         
         assemblyData: The assembly data that contains the base line geometry.
-        thicknessScale: The thickness scale to use.
+        lineScale: The line scale to use.
     */
-    createSolidLine(assemblyData, thicknessScale)
+    createSolidLine(assemblyData, lineScale)
     {
         this.model = [...assemblyData.lineSegment.model];
-        const lengthScale = this.pathLength / assemblyData.lineLength;
         for (let i = 3; i < this.model.length; i += 6)
         {
-            this.model[i] *= thicknessScale;
-            this.model[i + 1] *= lengthScale;
-            this.model[i + 2] *= thicknessScale;
+            this.model[i] *= lineScale * assemblyData.lineThickness;
+            this.model[i + 1] *= this.pathLength;
+            this.model[i + 2] *= lineScale * assemblyData.lineThickness;
         }
     }
     /*
@@ -98,14 +120,98 @@ class Line
     createLine(viewer)
     {
         if (viewer.assemblyData.lineStyle == 0)
-            this.createSolidLine(viewer.assemblyData, viewer.thicknessScale);
+            this.createSolidLine(viewer.assemblyData, viewer.lineScale);
         else if (viewer.assemblyData.lineStyle == 1)
-            this.createDashedLine(viewer.assemblyData, viewer.thicknessScale);
+            this.createDashedLine(viewer.assemblyData, viewer.lineScale);
+        const setToNull = this.partial == null;
+        if (this.partial == null)
+            this.partial = [...viewer.assemblyData.lineSegment.model];
+        this.vertexBuffer = viewer.ctx.createBuffer();
+        this.vertexArray = viewer.ctx.createVertexArray();
+        viewer.ctx.bindVertexArray(this.vertexArray);
         viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.vertexBuffer);
         viewer.ctx.bufferData(
             viewer.ctx.ARRAY_BUFFER,
             new Float32Array(this.model),
             viewer.ctx.STATIC_DRAW
         );
+        // Normal attribute.
+        viewer.ctx.vertexAttribPointer(
+            viewer.vertexNormal,
+            3,
+            viewer.ctx.FLOAT,
+            false,
+            24,
+            0
+        );
+        viewer.ctx.enableVertexAttribArray(viewer.vertexNormal);
+        // Position attribute.
+        viewer.ctx.vertexAttribPointer(
+            viewer.vertexPosition,
+            3,
+            viewer.ctx.FLOAT,
+            false,
+            24,
+            12
+        );
+        viewer.ctx.enableVertexAttribArray(viewer.vertexPosition);
+        this.partialVertexBuffer = viewer.ctx.createBuffer();
+        this.partialVertexArray = viewer.ctx.createVertexArray();
+        viewer.ctx.bindVertexArray(this.partialVertexArray);
+        viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.partialVertexBuffer);
+        viewer.ctx.bufferData(
+            viewer.ctx.ARRAY_BUFFER,
+            new Float32Array(this.partial),
+            viewer.ctx.STATIC_DRAW
+        );
+        // Normal attribute.
+        viewer.ctx.vertexAttribPointer(
+            viewer.vertexNormal,
+            3,
+            viewer.ctx.FLOAT,
+            false,
+            24,
+            0
+        );
+        viewer.ctx.enableVertexAttribArray(viewer.vertexNormal);
+        // Position attribute.
+        viewer.ctx.vertexAttribPointer(
+            viewer.vertexPosition,
+            3,
+            viewer.ctx.FLOAT,
+            false,
+            24,
+            12
+        );
+        viewer.ctx.enableVertexAttribArray(viewer.vertexPosition);
+        if (setToNull)
+            this.partial = null;
+    }
+    /*
+        Updates the line geometry.
+        
+        viewer: The model viewer to use.
+    */
+    updateLine(viewer)
+    {
+        if (viewer.assemblyData.lineStyle == 0)
+            this.createSolidLine(viewer.assemblyData, viewer.lineScale);
+        else if (viewer.assemblyData.lineStyle == 1)
+            this.createDashedLine(viewer.assemblyData, viewer.lineScale);
+        viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.vertexBuffer);
+        viewer.ctx.bufferData(
+            viewer.ctx.ARRAY_BUFFER,
+            new Float32Array(this.model),
+            viewer.ctx.STATIC_DRAW
+        );
+        if (this.partial != null)
+        {
+            viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.partialVertexBuffer);
+            viewer.ctx.bufferData(
+                viewer.ctx.ARRAY_BUFFER,
+                new Float32Array(this.partial),
+                viewer.ctx.STATIC_DRAW
+            );
+        }
     }
 }

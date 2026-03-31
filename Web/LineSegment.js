@@ -9,30 +9,42 @@ class LineSegment
     /*
         Class constructor.
 
-        length: Length of the line segment.
-        thickness: Thickness of the line segment.
-        numberOfTriangles: Number of triangles in the end face.
+        numberOfTriangles: The number of triangles in the end face.
     */
-    constructor(length, thickness, numberOfTriangles)
+    constructor(numberOfTriangles)
     {
-        if (length <= 0 || length > 10)
-            throw new Error("LineSegment.constructor error: Line segment length must be between 1 and 10 inclusive.");
-        this.length = length;
-        if (thickness <= 0 || thickness > 10)
-            throw new Error("LineSegment.constructor error: Line segment thickness must be between 1 and 10 inclusive.");
-        this.thickness = thickness;
-        this.numberOfTriangles = numberOfTriangles;
-        this.createModel();
+        this.createVertices(numberOfTriangles);
+        this.createTriangles(numberOfTriangles);
+        const length = numberOfTriangles * 4 * 3 * 6;
+        this.model = new Float32Array(length);
+        let modelIndex = 0;
+        let vector = [0, -1, 0];
+        modelIndex = this.writeData(0, numberOfTriangles, modelIndex, vector);
+        vector = [0, 1, 0];
+        modelIndex = this.writeData(numberOfTriangles, numberOfTriangles, modelIndex, vector);
+        const increment = 2 * Math.PI / numberOfTriangles;
+        const initialAngle = increment / 2;
+        for (let i = 0; i < numberOfTriangles; i++)
+        {
+            vector =
+            [
+                Math.cos(initialAngle + increment * i),
+                0,
+                Math.sin(initialAngle + increment * i)
+            ];
+            modelIndex = this.writeData((i + numberOfTriangles) * 2, 2, modelIndex, vector);
+        }
     }
     /*
         Creates a triangle that is on an end face.
 
         index: The index in vertices.
-        y: The y value to use. This will be 0 or length.
+        y: The y value to use. This will be 0 or 1.
+        numberOfTriangles: The number of triangles in the end face.
     */
-    createEndTriangle(index, y)
+    createEndTriangle(index, y, numberOfTriangles)
     {
-        const indices = [index, index == this.numberOfTriangles - 1 ? 0 : index + 1];
+        const indices = [index, index == numberOfTriangles - 1 ? 0 : index + 1];
         let triangle = new Array(3);
         for (let i = 0; i < 2; i++)
         {
@@ -51,12 +63,14 @@ class LineSegment
         Creates a triangle that is on a side face.
 
         index: The index in vertices.
-        y0: The first y value to use. This will be 0 or length.
-        y1: The second y value to use. This will be 0 or length.
+        y0: The first y value to use. This will be 0 or 1.
+        y1: The second y value to use. This will be 0 or 1.
+        useFirst: Indicates if the first index should be used.
+        numberOfTriangles: The number of triangles in the end face.
     */
-    createSideTriangles(index, y0, y1, useFirst)
+    createSideTriangles(index, y0, y1, useFirst, numberOfTriangles)
     {
-        const indices = [index, index == this.numberOfTriangles - 1 ? 0 : index + 1];
+        const indices = [index, index == numberOfTriangles - 1 ? 0 : index + 1];
         let triangle = new Array(3);
         for (let i = 0; i < 2; i++)
         {
@@ -73,58 +87,41 @@ class LineSegment
         triangle[2][2] = this.vertices[index][1];
         return triangle;
     }
-    // Creates the triangles.
-    createTriangles()
+    /*
+        Creates the triangles.
+
+        numberOfTriangles: Number of triangles in the end face.
+    */
+    createTriangles(numberOfTriangles)
     {
-        this.triangles = new Array(this.numberOfTriangles * 4);
+        this.triangles = new Array(numberOfTriangles * 4);
         // Create the top and bottom triangles.
-        for (let i = 0; i < this.numberOfTriangles; i++)
+        for (let i = 0; i < numberOfTriangles; i++)
         {
-            this.triangles[i] = this.createEndTriangle(i, 0);
-            this.triangles[i + this.numberOfTriangles] = this.createEndTriangle(i, this.length);
+            this.triangles[i] = this.createEndTriangle(i, 0, numberOfTriangles);
+            this.triangles[i + numberOfTriangles] = this.createEndTriangle(i, 1, numberOfTriangles);
         }
         // Create the side triangles.
-        for (let i = 0; i < this.numberOfTriangles; i++)
+        for (let i = 0; i < numberOfTriangles; i++)
         {
-            this.triangles[(i + this.numberOfTriangles) * 2] = this.createSideTriangles(i, 0, this.length, true);
-            this.triangles[(i + this.numberOfTriangles) * 2 + 1] = this.createSideTriangles(i, this.length, 0, false);
+            this.triangles[(i + numberOfTriangles) * 2] = this.createSideTriangles(i, 0, 1, true, numberOfTriangles);
+            this.triangles[(i + numberOfTriangles) * 2 + 1] = this.createSideTriangles(i, 1, 0, false, numberOfTriangles);
         }
     }
-    // Creates the model data.
-    createModel()
+    /*
+        Creates the vertices.
+
+        numberOfTriangles: The number of triangles in the end face.
+    */
+    createVertices(numberOfTriangles)
     {
-        this.createVertices();
-        this.createTriangles();
-        const length = this.numberOfTriangles * 4 * 3 * 6;
-        this.model = new Float32Array(length);
-        let modelIndex = 0;
-        let vector = [0, -1, 0];
-        modelIndex = this.writeData(0, this.numberOfTriangles, modelIndex, vector);
-        vector = [0, 1, 0];
-        modelIndex = this.writeData(this.numberOfTriangles, this.numberOfTriangles, modelIndex, vector);
-        const increment = 2 * Math.PI / this.numberOfTriangles;
-        const initialAngle = increment / 2;
-        for (let i = 0; i < this.numberOfTriangles; i++)
-        {
-            vector =
-            [
-                Math.cos(initialAngle + increment * i),
-                0,
-                Math.sin(initialAngle + increment * i)
-            ];
-            modelIndex = this.writeData((i + this.numberOfTriangles) * 2, 2, modelIndex, vector);
-        }
-    }
-    // Creates the vertices.
-    createVertices()
-    {
-        this.vertices = new Array(this.numberOfTriangles);
-        const increment = 2 * Math.PI / this.numberOfTriangles;
-        for (let i = 0; i < this.numberOfTriangles; i++)
+        this.vertices = new Array(numberOfTriangles);
+        const increment = 2 * Math.PI / numberOfTriangles;
+        for (let i = 0; i < numberOfTriangles; i++)
         {
             this.vertices[i] = new Float32Array(2);
-            this.vertices[i][0] = this.thickness * Math.cos(increment * i);
-            this.vertices[i][1] = this.thickness * Math.sin(increment * i);
+            this.vertices[i][0] = Math.cos(increment * i);
+            this.vertices[i][1] = Math.sin(increment * i);
         }
     }
     /*

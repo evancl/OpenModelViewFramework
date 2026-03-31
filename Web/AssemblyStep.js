@@ -36,6 +36,6 @@ class AssemblyStep
         if (this.lines == null)
             return;
         for (let i = 0; i < this.lines.length; i++)
-            this.lines[i].createLine(viewer);
+            this.lines[i].updateLine(viewer);
     }
 }
