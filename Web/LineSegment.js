@@ -24,7 +24,12 @@ class LineSegment
         this.numberOfTriangles = numberOfTriangles;
         this.createModel();
     }
+    /*
+        Creates a triangle that is on an end face.
 
+        index: The index in vertices.
+        y: The y value to use. This will be 0 or length.
+    */
     createEndTriangle(index, y)
     {
         const indices = [index, index == this.numberOfTriangles - 1 ? 0 : index + 1];
@@ -32,9 +37,9 @@ class LineSegment
         for (let i = 0; i < 2; i++)
         {
             triangle[i] = new Float32Array(3);
-            triangle[i][j] = this.vertices[indices[j]][0];
-            triangle[i][j] = y;
-            triangle[i][j] = this.vertices[indices[j]][1];
+            triangle[i][0] = this.vertices[indices[i]][0];
+            triangle[i][1] = y;
+            triangle[i][2] = this.vertices[indices[i]][1];
         }
         triangle[2] = new Float32Array(3);
         triangle[2][0] = 0;
@@ -42,7 +47,13 @@ class LineSegment
         triangle[2][2] = 0;
         return triangle;
     }
+    /*
+        Creates a triangle that is on a side face.
 
+        index: The index in vertices.
+        y0: The first y value to use. This will be 0 or length.
+        y1: The second y value to use. This will be 0 or length.
+    */
     createSideTriangles(index, y0, y1, useFirst)
     {
         const indices = [index, index == this.numberOfTriangles - 1 ? 0 : index + 1];
@@ -50,9 +61,9 @@ class LineSegment
         for (let i = 0; i < 2; i++)
         {
             triangle[i] = new Float32Array(3);
-            triangle[i][j] = this.vertices[indices[j]][0];
-            triangle[i][j] = y0;
-            triangle[i][j] = this.vertices[indices[j]][1];
+            triangle[i][0] = this.vertices[indices[i]][0];
+            triangle[i][1] = y0;
+            triangle[i][2] = this.vertices[indices[i]][1];
         }
         if (!useFirst)
             index = indices[1];
@@ -62,7 +73,7 @@ class LineSegment
         triangle[2][2] = this.vertices[index][1];
         return triangle;
     }
-
+    // Creates the triangles.
     createTriangles()
     {
         this.triangles = new Array(this.numberOfTriangles * 4);
@@ -70,16 +81,16 @@ class LineSegment
         for (let i = 0; i < this.numberOfTriangles; i++)
         {
             this.triangles[i] = this.createEndTriangle(i, 0);
-            this.triangles[i + this.numberOfTriangles] = this.createEndTriangle(i, length);
+            this.triangles[i + this.numberOfTriangles] = this.createEndTriangle(i, this.length);
         }
         // Create the side triangles.
         for (let i = 0; i < this.numberOfTriangles; i++)
         {
-            this.triangles[(i + this.numberOfTriangles) * 2] = this.createSideTriangles(i, 0, length, true);
-            this.triangles[(i + this.numberOfTriangles) * 2 + 1] = this.createSideTriangles(i, length, 0, false);
+            this.triangles[(i + this.numberOfTriangles) * 2] = this.createSideTriangles(i, 0, this.length, true);
+            this.triangles[(i + this.numberOfTriangles) * 2 + 1] = this.createSideTriangles(i, this.length, 0, false);
         }
     }
-
+    // Creates the model data.
     createModel()
     {
         this.createVertices();
@@ -104,7 +115,7 @@ class LineSegment
             modelIndex = this.writeData((i + this.numberOfTriangles) * 2, 2, modelIndex, vector);
         }
     }
-
+    // Creates the vertices.
     createVertices()
     {
         this.vertices = new Array(this.numberOfTriangles);
@@ -116,7 +127,14 @@ class LineSegment
             this.vertices[i][1] = this.thickness * Math.sin(increment * i);
         }
     }
+    /*
+        Writes the specified data to the model array.
 
+        triangleIndex: The index within the triangles array.
+        numberOfTriangles: The number of triangles to write out.
+        modelIndex: The index within the model array.
+        vector: The triangle normal vector.
+    */
     writeData(triangleIndex, numberOfTriangles, modelIndex, vector)
     {
         for (let i = triangleIndex; i < triangleIndex + numberOfTriangles; i++)

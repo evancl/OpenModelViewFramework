@@ -110,7 +110,7 @@ class Part extends Component
             viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.vertexBuffer);
             viewer.ctx.bufferData(
                 viewer.ctx.ARRAY_BUFFER,
-                viewer.models[this.id],
+                new Float32Array(viewer.models[this.id]),
                 viewer.ctx.STATIC_DRAW
             );
         }

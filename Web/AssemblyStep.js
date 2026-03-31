@@ -29,14 +29,13 @@ class AssemblyStep
     /*
         Updates the line geometry after zooming.
 
-        assemblyData: The assembly data that contains the base line geometry.
-        thicknessScale: The thickness scale to use.
+        viewer: The model viewer to use.
     */
-    updateLines(assemblyData, thicknessScale)
+    updateLines(viewer)
     {
         if (this.lines == null)
             return;
         for (let i = 0; i < this.lines.length; i++)
-            this.lines[i].createLine(assemblyData, thicknessScale);
+            this.lines[i].createLine(viewer);
     }
 }

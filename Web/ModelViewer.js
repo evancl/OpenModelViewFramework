@@ -25,6 +25,7 @@ class ModelViewer
         this.viewer.addEventListener("mousedown", (event) => { self.onStartRotate(self, event); });
         this.viewer.addEventListener("mouseup", (event) => { self.onStopRotate(self); });
         this.isRotating = false;
+        this.thicknessScale = (this.camera.right - this.camera.left) / 1000;
         this.cursorX = 0.0;
         this.cursorY = 0.0;
         this.ctx = this.viewer.getContext("webgl2", { antialias: true });
@@ -61,8 +62,6 @@ class ModelViewer
         this.ctx.uniform3fv(this.specularLightPosition, this.light.specularPosition);
         this.ctx.uniformMatrix4fv(this.view, false, this.camera.view);
         this.ctx.uniformMatrix4fv(this.projection, false, this.camera.projection);
-        // This is the identity matrix.
-        this.rootTransform = mat4.create();
         this.needsRebuild = false;
         this.isExploded = false;
         this.createBuffers(this.root, false);
@@ -118,19 +117,10 @@ class ModelViewer
                     for (let j = 0; j < this.assemblyData.steps[i].lines.length; j++)
                     {
                         const line = this.assemblyData.steps[i].lines[j];
-                        if (this.assemblyData.lineStyle == 0)
-                            line.createSolidLine(this.camera, this.assemblyData);
-                        else if (this.assemblyData.lineStyle == 1)
-                            line.createDashedLine(this.camera, this.assemblyData);
                         line.vertexArray = this.ctx.createVertexArray();
                         this.ctx.bindVertexArray(line.vertexArray);
                         line.vertexBuffer = this.ctx.createBuffer();
-                        this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, line.vertexBuffer);
-                        this.ctx.bufferData(
-                            this.ctx.ARRAY_BUFFER,
-                            line.model,
-                            this.ctx.STATIC_DRAW
-                        );
+                        line.createLine(this);
                         // Normal attribute.
                         this.ctx.vertexAttribPointer(
                             this.vertexNormal,
@@ -355,11 +345,9 @@ class ModelViewer
         const left = self.camera.left;
         const right = self.camera.right;
         self.camera.zoomCamera(self, event);
+        self.thicknessScale *= (self.camera.right - self.camera.left) / (right - left);
         if (self.isExploded)
-        {
-            const thicknessScale = .01 * (camera.right - camera.left) / (right - left);
-            self.assemblyData.updateLines(thicknessScale);
-        }
+            self.assemblyData.updateLines(self);
         self.ctx.uniformMatrix4fv(
             self.projection,
             false,
@@ -415,6 +403,7 @@ class ModelViewer
                 this.root.getChild(components[i].name).explode();
         }
         this.isExploded = true;
+        this.assemblyData.updateLines(this);
         this.render();
     }
     // Places the model in a collapsed state.
@@ -453,17 +442,20 @@ class ModelViewer
         }
         if (this.isExploded && this.assemblyData.steps[this.assemblyStep].lines != null)
         {
+            this.ctx.uniform4fv(this.properties, this.assemblyData.properties);
             for (let i = 0; i < this.assemblyData.steps[this.assemblyStep].lines.length; i++)
             {
                 const line = this.assemblyData.steps[this.assemblyStep].lines[i];
                 this.ctx.bindVertexArray(line.vertexArray);
-                this.ctx.uniform4fv(this.properties, this.assemblyData.properties);
-                for (let j = 0; j < line.transforms.length; j++)
+                for (let j = 0; j < line.translations.length; j++)
                 {
+                    line.transform[12] = line.translations[j][0];
+                    line.transform[13] = line.translations[j][1];
+                    line.transform[14] = line.translations[j][2];
                     this.ctx.uniformMatrix4fv(
                         this.model,
                         false,
-                        line.transform[i]
+                        line.transform
                     );
                     // The count is ((number of floats in buffer) * (4 bytes per float) / (72 bytes per triangle)) * (3 indices per triangle).
                     this.ctx.drawArrays(this.ctx.TRIANGLES, 0, line.model.length / 6);

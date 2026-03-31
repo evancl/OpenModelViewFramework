@@ -48,11 +48,11 @@ class AssemblyData
     /*
         Updates the line geometry after zooming.
 
-        thicknessScale: The thickness scale to use.
+        viewer: The model viewer to use.
     */
-    updateLines(thicknessScale)
+    updateLines(viewer)
     {
         for (let i = 0; i < this.steps.length; i++)
-            this.steps[i].updateLines(this, thicknessScale);
+            this.steps[i].updateLines(viewer);
     }
 }

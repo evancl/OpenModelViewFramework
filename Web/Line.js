@@ -34,15 +34,18 @@ class Line
         // Path length.
         this.pathLength = vec3.length(this.path);
         this.path = vec3.normalize(this.path, this.path);
-        const axis = vec3.cross(vec3.create(), y, this.path);
-        const angle = vec3.angle(y, this.path);
-        // Transforms for this line.
-        this.transforms = new Array();
-        // Matrix that aligns the line segment to the path.
-        this.transforms[0] = mat4.fromRotation(mat4.create(), angle, axis);
-        this.transform[0][12] = start[0];
-        this.transform[0][13] = start[1];
-        this.transform[0][14] = start[2];
+        // Translations for this line.
+        this.translations = new Array(1);
+        this.translations[0] = vec3.fromValues(start[0], start[1], start[2]);
+        if (vec3.exactEquals(y, this.path))
+            this.transform = mat4.create();
+        else
+        {
+            const axis = vec3.cross(vec3.create(), y, this.path);
+            const angle = vec3.angle(y, this.path);
+            // Matrix that aligns the line segment to the path.
+            this.transform = mat4.fromRotation(mat4.create(), angle, axis);
+        }
     }
     /*
         Creates multiple cylinders that represent the line.
@@ -53,7 +56,22 @@ class Line
     createDashedLine(assemblyData, thicknessScale)
     {
         this.model = [...assemblyData.lineSegment.model];
-        // TODO
+        let length = thicknessScale * assemblyData.lineLength;
+        const lengthScale = length >= this.pathLength ? this.pathLength / assemblyData.lineLength : thicknessScale;
+        for (let i = 3; i < this.model.length; i += 6)
+        {
+            this.model[i] *= thicknessScale;
+            this.model[i + 1] *= lengthScale;
+            this.model[i + 2] *= thicknessScale;
+        }
+        const numberOfSegments = Math.ceil(Math.floor(this.pathLength / (thicknessScale * assemblyData.lineLength)) / 2);
+        if (numberOfSegments > 1)
+        {
+            const factor = 2 * thicknessScale * assemblyData.lineLength;
+            this.translations.length = numberOfSegments;
+            for (var i = 1; i < numberOfSegments; i++)
+                this.translations[i] = vec3.add(vec3.create(), this.translations[0], vec3.scale(vec3.create(), this.path, i * factor));
+        }
     }
     /*
         Creates a cylinder that represents the line.
@@ -64,8 +82,8 @@ class Line
     createSolidLine(assemblyData, thicknessScale)
     {
         this.model = [...assemblyData.lineSegment.model];
-        const lengthScale = this.pathLength / (assemblyData.lineLength * thicknessScale);
-        for (let i = 3; i < this.model.length; i += 3)
+        const lengthScale = this.pathLength / assemblyData.lineLength;
+        for (let i = 3; i < this.model.length; i += 6)
         {
             this.model[i] *= thicknessScale;
             this.model[i + 1] *= lengthScale;
@@ -75,14 +93,19 @@ class Line
     /*
         Creates the line geometry.
         
-        assemblyData: The assembly data that contains the base line geometry.
-        thicknessScale: The thickness scale to use.
+        viewer: The model viewer to use.
     */
-    createLine(assemblyData, thicknessScale)
+    createLine(viewer)
     {
-        if (assemblyData.lineStyle == 0)
-            this.createSolidLine(assemblyData, thicknessScale);
-        else if (assemblyData.lineStyle == 1)
-            this.createDashedLine(assemblyData, thicknessScale);
+        if (viewer.assemblyData.lineStyle == 0)
+            this.createSolidLine(viewer.assemblyData, viewer.thicknessScale);
+        else if (viewer.assemblyData.lineStyle == 1)
+            this.createDashedLine(viewer.assemblyData, viewer.thicknessScale);
+        viewer.ctx.bindBuffer(viewer.ctx.ARRAY_BUFFER, this.vertexBuffer);
+        viewer.ctx.bufferData(
+            viewer.ctx.ARRAY_BUFFER,
+            new Float32Array(this.model),
+            viewer.ctx.STATIC_DRAW
+        );
     }
 }
