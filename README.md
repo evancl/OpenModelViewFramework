@@ -1,5 +1,5 @@
 # OpenModelViewFramework
-This repository contains a collection of libraries and applications for displaying 3D models in a browser. The WebGL application uses three file types to represent a CAD model. You can use these files types to create
+This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses WebGL and three files to represent a CAD model. You can use these files to create
 3D views of CAD models like the following:
 ## Assembly Data File (.adata)
 An assembly data file contains each assembly step and indicates which components are in each one. It also includes any assembly step specific component transforms, explode line start and end points,
@@ -17,7 +17,7 @@ struct AssemblyDataFile
 }
 ```
 ## Component Data File (.cdata)
-A component data file stores viewable geometry in a CAD model and any component properties that are to be updated.
+A component data file stores viewable geometry and any component properties that should be updated.
 ```c
 // General structure.
 struct ComponentDataFile
@@ -30,7 +30,7 @@ struct ComponentDataFile
 }
 ```
 ## Component Tree File (.ctree)
-A component tree file stores the CAD model hierarchy, component locations relative to the top level CAD model, component color and reflection properties, and viewable geometry references.
+A component tree file stores the CAD model hierarchy, component locations relative to the top level assembly, component color and reflection properties, and viewable geometry references.
 ```c
 // General structure.
 struct ComponentTreeFile
@@ -45,12 +45,10 @@ struct ComponentTreeFile
     struct ComponentTreeFile Children[];
 }
 ```
-## Common Library
-OpenModelViewFramework.Library.dll contains application code that is independent of any CAD application.
-## WebGL Application
+## Web Application
 The web application is available through a CDN. Simply include the following code in your product viewer's webpage:
 <script>...</script>
-### General Usage
+### General Usage:
 ```js
 let viewer;
 
