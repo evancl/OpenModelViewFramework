@@ -170,7 +170,7 @@ implemented.
 ### SolidWorks
 OpenModelViewFramework.SolidWorks.Util.exe is a command line application that creates the necessary model data for the web application from SolidWorks models. The following options are available:
 ```txt
--ad <name.sldprt | name.sldasm>: Creates an assembly data file (.adata) using the model file.
+-ad <name.sldasm>: Creates an assembly data file (.adata) using the model file.
 ```
 ```txt
 -ad-json <json file name>: Creates an assembly data file (.adata) using the json file.
