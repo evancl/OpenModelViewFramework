@@ -1,5 +1,6 @@
 .vs*
 obj*
+bin*
 Web/Test.js
 Web/Test.adata
 Web/Test.cdata
