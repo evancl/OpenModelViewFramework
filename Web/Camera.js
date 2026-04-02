@@ -28,14 +28,22 @@ class Camera
         let denominator = radius * Math.cos(this.phi);
         // Theta. Units are in radians.
         this.theta = denominator == 0 ? 0 : Math.asin(-position[2] / denominator);
+        // Left bound of the frustum.
         this.left = left;
+        // Right bound of the frustum.
         this.right = right;
+        // Top bound of the frustum.
         this.top = top;
+        // Bottom bound of the frustum.
         this.bottom = bottom;
+        // Near bound of the frustum.
         this.near = near;
+        // Far bound of the frustum.
         this.far = far;
+        // Projection matrix.
         this.projection = mat4.create();
         this.projection = mat4.ortho(this.projection, this.left, this.right, this.bottom, this.top, this.near, this.far);
+        // View matrix.
         this.view = mat4.create();
         this.view[3] = 0;
         this.view[4] = 0;
@@ -74,7 +82,7 @@ class Camera
         this.setRotation();
     }
     /*
-        Sets the scale when zooming.
+        Sets the frustum bounds when zooming.
 
         viewer: The model viewer to use.
         event: The scroll event.
