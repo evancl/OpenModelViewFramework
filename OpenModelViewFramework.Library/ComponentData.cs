@@ -34,7 +34,7 @@ public class ComponentData
             _Properties = value;
         }
     }
-    // STL file names.
+    // stl file names.
     string[] Files;
 
     public ComponentData()
@@ -89,7 +89,7 @@ public class ComponentData
         }
     }
     /*
-        Gets the binary representation of the geometry in the STL file.
+        Gets the binary representation of the geometry in the stl file.
 
         data: The binary representation.
     */
