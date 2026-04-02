@@ -39,7 +39,7 @@ class LinkedList
 		let node = this.head;
 		while (node != null)
 		{
-			if (node.value = value)
+			if (node.value == value)
 				break;
 			node = node.next;
 		}
