@@ -7,7 +7,7 @@ public class Part : Component
     short _ID;
     byte[] _Properties;
     float[] _Transform;
-    // Identifier for geometry data. Size: 2 bytes.
+    // Identifier for geometry data.
     protected override short ID
     {
         get
@@ -22,7 +22,7 @@ public class Part : Component
         }
     }
     /*
-        Color and reflection properties. Size: 4 bytes.
+        Color and reflection properties.
 
         0: R (0 - 255)
         1: G (0 - 255)
@@ -45,7 +45,7 @@ public class Part : Component
         }
     }
     /*
-        Data that transforms this part relative to the global coordinate system. Size: 48 bytes.
+        Data that transforms this part relative to the global coordinate system.
         
         r0c0, r0c1, r0c2,
         r1c0, r1c1, r1c2,
