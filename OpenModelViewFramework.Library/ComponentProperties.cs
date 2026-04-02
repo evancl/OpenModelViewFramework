@@ -3,7 +3,7 @@ namespace OpenModelViewFramework.Library;
 public class ComponentProperties
 {
     byte _Properties;
-    // Bit field that indicates which properties in the component have been updated. Size: 1 byte.
+    // Bit field that indicates which properties in the component have been updated.
     byte Properties
     {
         get
