@@ -1,6 +1,5 @@
 # OpenModelViewFramework
-This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses three files and WebGL to represent and display CAD models. These files can be used to create
-3D views of CAD models like the following:
+This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses three files and WebGL to represent and display 3D models like [this one.](https://github.com/user-attachments/assets/a1cf667a-19d7-49a3-a672-645ade0e2e30)
 ## Assembly Data File (.adata)
 An assembly data file contains each assembly step and indicates which components are in each one. It also includes any assembly step specific component transforms, explode line start and end points,
 and explode line properties.
@@ -184,4 +183,5 @@ OpenModelViewFramework.SolidWorks.Util.exe is a command line application that cr
 ```txt
 -stl <property>: Creates an stl file for every configuration of each part in the current folder filtered by the specified property. The property should resolve to Yes or No.
 ```
-As of 4/1/26, explode line data can't be retrieved using the application. That information must be manually added. Modify the created json file and then run the application with the -ad-json option.
+> [!NOTE]
+> Explode line data can't currently be retrieved using the application. That information must be manually added. Modify the created json file and then run the application with the -ad-json option.
