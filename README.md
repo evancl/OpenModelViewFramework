@@ -61,7 +61,7 @@ struct ComponentDataFile
     // Present if useCompressedFormat = 0 and modelsCount > 0.
     struct Model models[];
     // Present if useCompressedFormat = 1 and modelsCount > 0.
-    struct ModelGeometry models[];
+    struct ModelGeometry geometry[];
 };
 
 struct ComponentProperties
