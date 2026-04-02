@@ -46,7 +46,7 @@ public class ComponentData
             SearchOption.AllDirectories
         );
         if (Files.Length == 0 || Files.Length > short.MaxValue)
-            throw new Exception($"ComponentData.ComponentData error: STL file count must be between 1 and {short.MaxValue} inclusive.");
+            throw new Exception($"ComponentData.ComponentData error: stl file count must be between 1 and {short.MaxValue} inclusive.");
         Array.Sort(Files);
     }
     /*
