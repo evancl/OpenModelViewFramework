@@ -5,7 +5,7 @@ namespace OpenModelViewFramework.Library;
 public class Assembly : Component
 {
     Component[] _Children;
-    // Identifier for geometry data. -1 indicates that this component is an assembly. Size: 2 bytes.
+    // Identifier for geometry data. -1 indicates that this component is an assembly.
     protected override short ID => -1;
     // Child components.
     Component[] Children
