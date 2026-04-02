@@ -11,28 +11,43 @@ class ModelViewer
     */
     constructor(root, assemblyData, componentData, camera, light)
     {
+        // Root component.
         this.root = root;
+        // Assembly data.
         this.assemblyData = assemblyData;
+        // Model geometry.
         this.models = componentData.models;
+        // The orthographic camera.
         this.camera = camera;
+        // The light.
         this.light = light;
+        // Hidden components.
         this.hiddenComponents = new LinkedList();
+        // Visible components.
         this.visibleComponents = new LinkedList();
+        // Canvas element.
         this.viewer = document.querySelector("#model-viewer");
         var self = this;
         this.viewer.addEventListener("wheel", (event) => { self.onZoom(self, event); });
         this.viewer.addEventListener("mousemove", (event) => { self.onRotate(self, event); });
         this.viewer.addEventListener("mousedown", (event) => { self.onStartRotate(self, event); });
         this.viewer.addEventListener("mouseup", (event) => { self.onStopRotate(self); });
+        // Indicates if the model is being rotated.
         this.isRotating = false;
+        // Explode line scale.
         this.lineScale = (this.camera.right - this.camera.left) / 1000;
+        // Cursor x position.
         this.cursorX = 0.0;
+        // Cursor y position.
         this.cursorY = 0.0;
+        // Viewer context.
         this.ctx = this.viewer.getContext("webgl2", { antialias: true });
         if (this.ctx === null)
             throw new Error("ModelViewer.constructor error: Failed to initialize viewer.");
         const props = this.viewer.getBoundingClientRect();
+        // Left side of the viewer.
         this.left = props.left + document.documentElement.scrollLeft;
+        // Top of the viewer.
         this.top = props.top + document.documentElement.scrollTop;
         this.ctx.canvas.width = props.width;
         this.ctx.canvas.height = props.height;
@@ -40,19 +55,32 @@ class ModelViewer
         this.ctx.clearColor(0, 0, 0, 0);
         this.ctx.enable(this.ctx.DEPTH_TEST);
         this.ctx.depthFunc(this.ctx.LEQUAL);
+        // The shader program.
         this.shaderProgram = this.configureShaders();
         this.ctx.useProgram(this.shaderProgram);
+        // Vertex normal vector location.
         this.vertexNormal = this.ctx.getAttribLocation(this.shaderProgram, "vertexNormal");
+        // Vertex position vector location.
         this.vertexPosition = this.ctx.getAttribLocation(this.shaderProgram, "vertexPosition");
+        // Camera position vector location.
         this.cameraPosition = this.ctx.getUniformLocation(this.shaderProgram, "cameraPosition");
+        // Ambient light color vector location.
         this.ambientLight = this.ctx.getUniformLocation(this.shaderProgram, "ambientLight");
+        // Diffuse light color vector location.
         this.diffuseLightColor = this.ctx.getUniformLocation(this.shaderProgram, "diffuseLightColor");
+        // Diffuse light direction vector location.
         this.diffuseLightVector = this.ctx.getUniformLocation(this.shaderProgram, "diffuseLightVector");
+        // Specular light color vector location.
         this.specularLightColor = this.ctx.getUniformLocation(this.shaderProgram, "specularLightColor");
+        // Specular light position vector location.
         this.specularLightPosition = this.ctx.getUniformLocation(this.shaderProgram, "specularLightPosition");
+        // Model matrix location.
         this.model = this.ctx.getUniformLocation(this.shaderProgram, "modelMatrix");
+        // View matrix location.
         this.view = this.ctx.getUniformLocation(this.shaderProgram, "viewMatrix");
+        // Projection matrix location.
         this.projection = this.ctx.getUniformLocation(this.shaderProgram, "projectionMatrix");
+        // Color and reflection vector location.
         this.properties = this.ctx.getUniformLocation(this.shaderProgram, "properties");
         this.ctx.uniform3fv(this.cameraPosition, this.camera.position);
         this.ctx.uniform3fv(this.ambientLight, this.light.ambient);
@@ -62,7 +90,9 @@ class ModelViewer
         this.ctx.uniform3fv(this.specularLightPosition, this.light.specularPosition);
         this.ctx.uniformMatrix4fv(this.view, false, this.camera.view);
         this.ctx.uniformMatrix4fv(this.projection, false, this.camera.projection);
+        // Indicates if the visible component list has been updated.
         this.needsRebuild = false;
+        // Indicates if the model is in an exploded state.
         this.isExploded = false;
         this.createBuffers(this.root, false);
         this.render();
@@ -99,11 +129,12 @@ class ModelViewer
             this.ctx.enableVertexAttribArray(this.vertexPosition);
             node = node.next;
         }
+        // Displayed assembly step.
         if (this.assemblyData == null)
             this.assemblyStep = 0;
         else
         {
-            this.assemblyStep = assemblyData.steps.length - 1;
+            this.assemblyStep = this.assemblyData.steps.length - 1;
             for (let i = 0; i < this.assemblyData.steps.length; i++)
             {
                 for (let j = 0; j < this.assemblyData.steps[i].components.length; j++)
@@ -455,18 +486,17 @@ class ModelViewer
     /*
         Parses the component data file and updates the existing components and models.
 
-        body: The body to parse as a component data file.
+        body: The body to parse as a component data file. The uncompressed format must be used.
     */
     update(body)
     {
         const data = new Uint8Array(body);
         const view = new DataView(data.buffer);
-        let index = 0;
-        const useCompressedFormat = view.getUint8(index, true);
-        index++;
+        let index = 1;
         let count = view.getInt16(index, true);
         index += 2;
-        if (useCompressedFormat == 0 && count > 0)
+        const ids = new Array();
+        if (count > 0)
         {
             const decoder = new TextDecoder();
             for (let i = 0; i < count; i++)
@@ -474,13 +504,13 @@ class ModelViewer
                 const length = view.getUint16(index, true);
                 index += 2;
                 if (length == 0)
-                    index = this.setProperties(this.root, view, index);
+                    index = this.setProperties(this.root, view, index, ids);
                 else
                 {
                     const pathData = new Int8Array(data.buffer, index, length);
                     index += length;
                     const path = decoder.decode(pathData);
-                    index = this.setProperties(this.root.getChild(path), view, index);
+                    index = this.setProperties(this.root.getChild(path), view, index, ids);
                 }
             }
             if (this.needsRebuild)
@@ -489,26 +519,22 @@ class ModelViewer
                 this.needsRebuild = false;
             }
         }
-        if (useCompressedFormat == 0)
-        {
-            count = view.getInt16(index, true);
-            index += 2;
-        }
+        count = view.getInt16(index, true);
+        index += 2;
         if (count > 0)
         {
-            const ids = new Array();
             for (let i = 0; i < count; i++)
             {
                 const id = view.getInt16(index, true);
                 index += 2;
-                const size = view.getInt32(index, true);
+                const size = view.getInt32(index, true) * 72;
                 index += 4;
                 this.models[id] = new Float32Array(data.buffer.slice(index, index + size));
                 index += size;
                 ids.push(id);
             }
-            this.root.bind(ids, this);
         }
+        this.root.bind(ids, this);
     }
     /*
         Sets the component properties if they exist in the given input.
@@ -516,8 +542,9 @@ class ModelViewer
         component: The component to update.
         view: The data view to use.
         index: The index in the view to use.
+        ids: The updated IDs.
     */
-    setProperties(component, view, index)
+    setProperties(component, view, index, ids)
     {
         const updatedProps = view.getUint8(index, true);
         index++;
@@ -532,6 +559,7 @@ class ModelViewer
         {
             component.id = view.getInt16(index, true);
             index += 2;
+            ids.push(component.id);
         }
         if ((updatedProps & 1 << 2) != 0)
         {
