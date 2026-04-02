@@ -170,17 +170,18 @@ implemented.
 ### SolidWorks
 OpenModelViewFramework.SolidWorks.Util.exe is a command line application that creates the necessary model data for the web application from SolidWorks models. The following options are available:
 ```txt
--ad <name.sldasm>: Creates an assembly data file (.adata) using the model file.
+-ad <name>: Creates an adata file and a json file using the sldasm file.
 ```
 ```txt
--ad-json <json file name>: Creates an assembly data file (.adata) using the json file.
+-ad-json <json file name>: Creates an adata file using the json file.
 ```
 ```txt
--cd <name>: Creates a component data file (.cdata) using the specified name and every stl file in the current folder.
+-cd <name>: Creates a cdata file using the specified name and every stl file in the current folder.
 ```
 ```txt
--ct <name.sldprt | name.sldasm> <property>: Creates a component tree file (.ctree) using the model file and property. The property should resolve to Yes or No. stl files must exist in the current folder.
+-ct <name.sldprt | name.sldasm> <property>: Creates a ctree file using the model file and property. The property should resolve to Yes or No. stl files must exist in the current folder.
 ```
 ```txt
--stl <property>: Generates a stereolithography file (.stl) for every configuration of each part in the current folder filtered by the specified property. The property should resolve to Yes or No.
+-stl <property>: Creates an stl file for every configuration of each part in the current folder filtered by the specified property. The property should resolve to Yes or No.
 ```
+As of 4/1/26, explode line data can't be retrieved using the application. That information must be manually added. Modify the created json file and then run the application with the -ad-json option.
