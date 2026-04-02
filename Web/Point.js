@@ -2,13 +2,13 @@ class Point
 {
     constructor()
     {
-        // X coordinate.
+        // x coordinate.
         this.x = AssemblyData.view.getFloat32(AssemblyData.index, true);
         AssemblyData.index += 4;
-        // Y coordinate.
+        // y coordinate.
         this.y = AssemblyData.view.getFloat32(AssemblyData.index, true);
         AssemblyData.index += 4;
-        // Z coordinate.
+        // z coordinate.
         this.z = AssemblyData.view.getFloat32(AssemblyData.index, true);
         AssemblyData.index += 4;
     }
