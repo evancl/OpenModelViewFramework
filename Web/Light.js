@@ -11,30 +11,27 @@ class Light
     */
     constructor(diffuseDirection, specularPosition, ambient, diffuse, specular)
     {
+        // Ambient light color.
         this.ambient = vec3.fromValues(
             (ambient & 0xFF) / 255,
             (ambient >> 8 & 0xFF) / 255,
             (ambient >> 16 & 0xFF) / 255
         );
+        // Diffuse light color.
         this.diffuse = vec3.fromValues(
             (diffuse & 0xFF) / 255,
             (diffuse >> 8 & 0xFF) / 255,
             (diffuse >> 16 & 0xFF) / 255
         );
+        // Specular light color.
         this.specular = vec3.fromValues(
             (specular & 0xFF) / 255,
             (specular >> 8 & 0xFF) / 255,
             (specular >> 16 & 0xFF) / 255
         );
-        this.diffuseVector = vec3.fromValues(
-            diffuseDirection[0],
-            diffuseDirection[1],
-            diffuseDirection[2]
-        );
-        this.specularPosition = vec3.fromValues(
-            specularPosition[0],
-            specularPosition[1],
-            specularPosition[2]
-        );
+        // Diffuse light direction.
+        this.diffuseVector = vec3.clone(diffuseDirection);
+        // Specular light position.
+        this.specularPosition = vec3.clone(specularPosition);
     }
 }
