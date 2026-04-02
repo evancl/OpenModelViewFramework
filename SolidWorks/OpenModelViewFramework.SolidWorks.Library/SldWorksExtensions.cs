@@ -18,21 +18,14 @@ public static class SldWorksExtensions
     */
     public static AssemblyData CreateAssemblyData(this SldWorks app, string name)
     {
+        name = $"{name}.sldasm";
         if (!File.Exists(name))
             throw new Exception($"SldWorks.CreateAssemblyData error: {name} doesn't exist.");
-        var extension = Path.GetExtension(name);
-        int documentType;
-        if (extension == ".sldasm")
-            documentType = (int)swDocumentTypes_e.swDocASSEMBLY;
-        else if (extension == ".sldprt")
-            documentType = (int)swDocumentTypes_e.swDocPART;
-        else
-            throw new Exception("SldWorks.CreateAssemblyData error: Acceptable document types are .sldasm and .sldprt.");
         var directory = System.IO.Directory.GetCurrentDirectory();
         int errors = 0, warnings = 0;
         app.OpenDoc6(
             $"{directory}\\{name}",
-            documentType,
+            (int)swDocumentTypes_e.swDocASSEMBLY,
             (int)swOpenDocOptions_e.swOpenDocOptions_Silent,
             String.Empty,
             ref errors,
@@ -55,7 +48,7 @@ public static class SldWorksExtensions
         if (folders.Count == 0)
             throw new Exception($"SldWorks.CreateAssemblyData error: No folders were found in {name}.");
         var viewNames = (string[])assembly.GetExplodedViewNames2(config.Name);
-        var data = new AssemblyData(0, 5, 1, new int[4], new AssemblyStep[folders.Count]);
+        var data = new AssemblyData(1, 10, 1, new int[4], new AssemblyStep[folders.Count]);
         for (var i = 0; i < folders.Count; i++)
         {
             var item = folders[i];

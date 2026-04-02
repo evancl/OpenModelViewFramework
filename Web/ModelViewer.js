@@ -110,7 +110,7 @@ class ModelViewer
                 {
                     const component = this.assemblyData.steps[i].components[j];
                     if (component.transform != null)
-                        this.root.getChild(component.name).setTranslation(component.transform);
+                        this.root.getChild(component.name).setExplodedAndCollapsed(component.transform);
                 }
                 if (this.assemblyData.steps[i].lines != null)
                 {
@@ -462,9 +462,11 @@ class ModelViewer
         const data = new Uint8Array(body);
         const view = new DataView(data.buffer);
         let index = 0;
+        const useCompressedFormat = view.getUint8(index, true);
+        index++;
         let count = view.getInt16(index, true);
         index += 2;
-        if (count > 0)
+        if (useCompressedFormat == 0 && count > 0)
         {
             const decoder = new TextDecoder();
             for (let i = 0; i < count; i++)
@@ -487,8 +489,11 @@ class ModelViewer
                 this.needsRebuild = false;
             }
         }
-        count = view.getInt16(index, true);
-        index += 2;
+        if (useCompressedFormat == 0)
+        {
+            count = view.getInt16(index, true);
+            index += 2;
+        }
         if (count > 0)
         {
             const ids = new Array();

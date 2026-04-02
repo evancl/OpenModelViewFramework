@@ -17,7 +17,6 @@ public static class FeatureManagerExtensions
         var item = manager.GetFeatureTreeRootItem2((int)location).GetFirstChild();
         while (item != null)
         {
-            Console.WriteLine(item.Text);
             if (item.ObjectType != (int)swTreeControlItemType_e.swFeatureManagerItem_Feature)
             {
                 item = item.GetNext();

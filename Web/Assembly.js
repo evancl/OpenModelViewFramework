@@ -46,14 +46,14 @@ class Assembly extends Component
             this.children[i].collapse();
     }
     /*
-        Sets the collapsed and exploded transforms of the child components.
+        Sets the exploded and collapsed transforms of the child components.
 
         transform: The exploded transform.
     */
-    setTransform(transform)
+    setExplodedAndCollapsed(transform)
     {
         for (let i = 0; i < this.children.length; i++)
-            this.children[i].setTransform(transform);
+            this.children[i].setExplodedAndCollapsed(transform);
     }
     // Hides the immediate children.
     hideChildren()
@@ -81,12 +81,12 @@ class Assembly extends Component
     {
         if (this.isHidden)
             return;
-        else if (this.children.length == 0)
-            Component.visibleComponents.add(this);
-        else
+        for (let i = 0; i < this.children.length; i++)
         {
-            for (let i = 0; i < this.children.length; i++)
+            if (this.children[i].id == -1)
                 this.children[i].setVisibleComponents();
+            else if (!this.children[i].isHidden)
+                Component.visibleComponents.add(this.children[i]);
         }
     }
     /*

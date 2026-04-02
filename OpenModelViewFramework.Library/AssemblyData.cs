@@ -97,8 +97,8 @@ public class AssemblyData
         {
             if (value == null)
                 throw new ArgumentNullException("AssemblyData.Steps cannot be null.");
-            else if (value.Length == 0 || value.Length > short.MaxValue)
-                throw new ArgumentOutOfRangeException($"AssemblyData.Steps length must be between 1 and {short.MaxValue} inclusive.");
+            else if (value.Length == 0 || value.Length > byte.MaxValue)
+                throw new ArgumentOutOfRangeException($"AssemblyData.Steps length must be between 1 and {byte.MaxValue} inclusive.");
             _Steps = value;
         }
     }
@@ -146,7 +146,7 @@ public class AssemblyData
         data.Add((byte)LineLength);
         data.Add((byte)LineThickness);
         data.AddRange(Properties.Select(i => (byte)i).ToArray());
-        data.AddRange(GetBytes((short)Steps.Length));
+        data.Add((byte)Steps.Length);
         foreach (var step in Steps)
             step.GetBinaryRep(data);
     }
@@ -162,15 +162,14 @@ public class AssemblyData
         File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}\\{name}.adata", data.ToArray());
     }
     /*
-        Creates an adata file with the given name in the current working directory.
+        Creates an adata file in the current working directory.
 
         jsonFileName: The json file name to use.
-        assemblyDataFileName: The assembly data file name to use.
     */
-    public static void CreateFile(string jsonFileName, string assemblyDataFileName)
+    public static void CreateFileFromJson(string jsonFileName)
     {
         var json = File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}\\{jsonFileName}.json");
         var assemblyData = JsonSerializer.Deserialize<AssemblyData>(json);
-        assemblyData.CreateFile(assemblyDataFileName);
+        assemblyData.CreateFile(jsonFileName);
     }
 }

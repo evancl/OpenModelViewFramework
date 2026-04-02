@@ -91,7 +91,7 @@ class Line
                 this.partial[i + 1] *= partialLength;
                 this.partial[i + 2] *= lineScale * assemblyData.lineThickness;
             }
-            this.partialTranslation = vec3.scale(vec3.create(), this.path, this.pathLength - partialLength);
+            this.partialTranslation = vec3.add(vec3.create(), this.translations[0], vec3.scale(vec3.create(), this.path, this.pathLength - partialLength));
         }
         else
             this.partial = null;

@@ -64,11 +64,11 @@ class Part extends Component
             this.transform[i + 12] = this.collapsedTransform[i];
     }
     /*
-        Sets the collapsed and exploded transform of this part.
+        Sets the exploded and collapsed transform of this part.
 
         transform: The exploded transform.
     */
-    setTranslation(transform)
+    setExplodedAndCollapsed(transform)
     {
         this.collapsedTransform = new Float32Array(3);
         for (let i = 0; i < this.collapsedTransform.length; i++)

@@ -1,5 +1,6 @@
 using SolidWorks.Interop.sldworks;
 using System.Diagnostics;
+using System.Text.Json;
 using OpenModelViewFramework.Library;
 using OpenModelViewFramework.SolidWorks.Library;
 
@@ -26,18 +27,26 @@ class App
                     if (args.Length != 2)
                         throw new Exception("App.Run error: Invalid number of arguments.");
                     CreateProcess();
-                    Instance.CreateAssemblyData(args[1]).CreateFile(Path.GetFileNameWithoutExtension(args[1]));
+                    var assemblyData = Instance.CreateAssemblyData(args[1]);
+                    assemblyData.CreateFile(args[1]);
+                    var options = new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        IndentSize = 4
+                    };
+                    var jsonString = JsonSerializer.Serialize(assemblyData, options);
+                    File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}\\{args[1]}.json", jsonString);
                     break;
                 case "-ad-json":
-                    if (args.Length != 3)
+                    if (args.Length != 2)
                         throw new Exception("App.Run error: Invalid number of arguments.");
-                    AssemblyData.CreateFile(args[1], args[2]);
+                    AssemblyData.CreateFileFromJson(args[1]);
                     break;
                 case "-cd":
                     if (args.Length != 2)
                         throw new Exception("App.Run error: Invalid number of arguments.");
-                    var data = new ComponentData();
-                    data.CreateFile(args[1], true);
+                    var componentData = new ComponentData();
+                    componentData.CreateFile(args[1], true);
                     break;
                 case "-ct":
                     if (args.Length != 3)
@@ -86,11 +95,11 @@ class App
         if (args.Length == 0)
         {
             Console.WriteLine("Usage:\n");
-            Console.WriteLine("-ad <name.sldprt | name.sldasm>: Creates an assembly data file (.adata) using the specified model file.");
-            Console.WriteLine("-ad-json <json file name> <name>: Creates an assembly data file (.adata) using <json file name> and the specified name.");
-            Console.WriteLine("-cd <name>: Creates a component data file (.cdata) using the specified name and every stl file in the current folder.");
-            Console.WriteLine("-ct <name.sldprt | name.sldasm> <property>: Creates a component tree file (.ctree) using the specified model file and property.");
-            Console.WriteLine("-stl <property>: Generates a stereolithography file (.stl) for every configuration of each part in the current folder filtered by the specified property.");
+            Console.WriteLine("-ad <name>: Creates an adata file and a json file using the sldasm file.");
+            Console.WriteLine("-ad-json <json file name>: Creates an adata file using the json file.");
+            Console.WriteLine("-cd <name>: Creates a cdata file using the specified name and every stl file in the current folder.");
+            Console.WriteLine("-ct <name.sldprt | name.sldasm> <property>: Creates a ctree file using the model file and property. The property should resolve to Yes or No. stl files must exist in the current folder.");
+            Console.WriteLine("-stl <property>: Creates an stl file for every configuration of each part in the current folder filtered by the specified property. The property should resolve to Yes or No.");
             return;
         }
         var app = new App();
