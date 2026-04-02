@@ -5,13 +5,13 @@ namespace OpenModelViewFramework.Library;
 
 public class Component
 {
-    // Identifier for geometry data. -1 indicates that this component is an assembly. Size: 2 bytes.
+    // Identifier for geometry data. -1 indicates that this component is an assembly.
     protected virtual short ID { get; set; }
-    // Indicates if this component is hidden. Size: 1 byte.
+    // Indicates if this component is hidden.
     protected bool IsHidden;
-    // Name in the model's feature tree. Size: 1 - 255 bytes.
+    // Name in the model's feature tree.
     public string Name { get; }
-    // Path relative to the root component. Size: 0 - 32767 bytes.
+    // Path relative to the root component.
     public string Path { get; }
 
     private protected Component(bool isHidden, string name, string path)
@@ -38,7 +38,7 @@ public class Component
     internal virtual void GetBinaryRep(List<byte> data)
     {
         data.AddRange(GetBytes(ID));
-        data.Add(IsHidden ? (byte)1 : (byte)0);
+        data.Add(IsHidden ? 1 : 0);
         var bytes = Encoding.UTF8.GetBytes(Name);
         data.Add((byte)bytes.Length);
         data.AddRange(bytes);
@@ -56,7 +56,7 @@ public class Component
         data.AddRange(bytes);
         data.Add(properties);
         if ((properties & 1) != 0)
-            data.Add(IsHidden ? (byte)1 : (byte)0);
+            data.Add(IsHidden ? 1 : 0);
     }
     // Creates a ctree file in the current working directory.
     public void CreateComponentTreeFile()
