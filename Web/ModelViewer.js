@@ -492,7 +492,11 @@ class ModelViewer
     {
         const data = new Uint8Array(body);
         const view = new DataView(data.buffer);
-        let index = 1;
+        let index = 0;
+        const useCompressedFormat = view.getUint8(index, true) == 1;
+        if (useCompressedFormat)
+            throw new Error("ModelViewer.update error: Compressed format isn't supported.");
+        index++;
         let count = view.getInt16(index, true);
         index += 2;
         const ids = new Array();
