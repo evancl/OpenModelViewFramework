@@ -124,8 +124,8 @@ class Line
         else if (viewer.assemblyData.lineStyle == 1)
             this.createDashedLine(viewer.assemblyData, viewer.lineScale);
         const setToNull = this.partial == null;
-        if (this.partial == null)
-            this.partial = [...viewer.assemblyData.lineSegment.model];
+        if (setToNull)
+            this.partial = [0, 0, 0, 0, 0, 0];
         this.vertexBuffer = viewer.ctx.createBuffer();
         this.vertexArray = viewer.ctx.createVertexArray();
         viewer.ctx.bindVertexArray(this.vertexArray);
