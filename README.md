@@ -101,7 +101,6 @@ struct Triangle
 ## Component Tree File (.ctree)
 A component tree file stores the CAD model hierarchy, component locations relative to the top level assembly, component color and reflection properties, and viewable geometry references.
 ```c
-// General structure.
 struct ComponentTreeFile
 {
     short id;
