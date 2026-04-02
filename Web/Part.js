@@ -19,13 +19,13 @@ class Part extends Component
     */
     transform;
     /*
-        Transform data.
+        Collapsed transform data.
 
         Δx, Δy, Δz
     */
     collapsedTransform;
     /*
-        Transform data.
+        Exploded transform data.
 
         Δx, Δy, Δz
     */
@@ -78,23 +78,24 @@ class Part extends Component
     // Sets the transform using the data view.
     setTransform()
     {
-        this.transform = mat4.create();
-        this.transform[0] = Component.view.getFloat32(Component.index, true);
-        this.transform[1] = Component.view.getFloat32(Component.index + 4 * 3, true);
-        this.transform[2] = Component.view.getFloat32(Component.index + 4 * 6, true);
-        this.transform[3] = 0;
-        this.transform[4] = Component.view.getFloat32(Component.index + 4, true);
-        this.transform[5] = Component.view.getFloat32(Component.index + 4 * 4, true);
-        this.transform[6] = Component.view.getFloat32(Component.index + 4 * 7, true);
-        this.transform[7] = 0;
-        this.transform[8] = Component.view.getFloat32(Component.index + 4 * 2, true);
-        this.transform[9] = Component.view.getFloat32(Component.index + 4 * 5, true);
-        this.transform[10] = Component.view.getFloat32(Component.index + 4 * 8, true);
-        this.transform[11] = 0;
-        this.transform[12] = Component.view.getFloat32(Component.index + 4 * 9, true);
-        this.transform[13] = Component.view.getFloat32(Component.index + 4 * 10, true);
-        this.transform[14] = Component.view.getFloat32(Component.index + 4 * 11, true);
-        this.transform[15] = 1;
+        this.transform = mat4.fromValues(
+            Component.view.getFloat32(Component.index, true),
+            Component.view.getFloat32(Component.index + 4 * 3, true),
+            Component.view.getFloat32(Component.index + 4 * 6, true),
+            0,
+            Component.view.getFloat32(Component.index + 4, true),
+            Component.view.getFloat32(Component.index + 4 * 4, true),
+            Component.view.getFloat32(Component.index + 4 * 7, true),
+            0,
+            Component.view.getFloat32(Component.index + 4 * 2, true),
+            Component.view.getFloat32(Component.index + 4 * 5, true),
+            Component.view.getFloat32(Component.index + 4 * 8, true),
+            0,
+            Component.view.getFloat32(Component.index + 4 * 9, true),
+            Component.view.getFloat32(Component.index + 4 * 10, true),
+            Component.view.getFloat32(Component.index + 4 * 11, true),
+            1
+        );
         Component.index += 48;
     }
     /*
