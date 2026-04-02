@@ -6,7 +6,7 @@ class Component
     isHidden;
     // Name in the feature tree.
     name;
-    // Visible components in this component and any child components.
+    // Visible components in this component.
     static visibleComponents;
     // View of data.
     static view;
