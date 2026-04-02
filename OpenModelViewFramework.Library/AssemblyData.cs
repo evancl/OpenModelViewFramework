@@ -59,7 +59,7 @@ public class AssemblyData
         }
     }
     /*
-        Explode line color and reflection properties. Size: 4 bytes.
+        Explode line color and reflection properties.
 
         0: R (0 - 255)
         1: G (0 - 255)
