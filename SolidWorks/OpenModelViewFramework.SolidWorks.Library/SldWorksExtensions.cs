@@ -71,7 +71,7 @@ public static class SldWorksExtensions
         Creates an stl file for every configuration of each filtered part in the current folder.
 
         app: The SolidWorks application.
-        property: The name of the document property that determines if an stl file should be exported. The property should resolve to "Yes" or "No".
+        property: The name of the document property that determines if an stl file should be exported. The property should resolve to Yes or No.
     */
     public static void ExportStlFiles(this SldWorks app, string property)
     {
@@ -82,8 +82,8 @@ public static class SldWorksExtensions
             SearchOption.AllDirectories
         );
         int errors = 0, warnings = 0;
-        var firstExpression = new Regex("[\\:*?<|]+");
-        var secondExpression = new Regex("[>]+");
+        FirstExpression = new Regex("[\\:*?<|]+");
+        SecondExpression = new Regex("[>]+");
         foreach (var file in files)
         {
             var document = app.OpenDoc6(
@@ -125,7 +125,7 @@ public static class SldWorksExtensions
             {
                 if ((string)name != document.ConfigurationManager.ActiveConfiguration.Name)
                     document.ShowConfiguration2((string)name);
-                var absolutePath = $"{path} ({secondExpression.Replace(firstExpression.Replace((string)name, "["), "]")}).stl";
+                var absolutePath = $"{path} ({SecondExpression.Replace(FirstExpression.Replace((string)name, "["), "]")}).stl";
                 document.Extension.SaveAs3(
                     absolutePath,
                     (int)swSaveAsVersion_e.swSaveAsCurrentVersion,
@@ -207,7 +207,7 @@ public static class SldWorksExtensions
 
         app: The SolidWorks application.
         name: The file name.
-        property: The name of the document property that determines if an stl file should be referenced. The property should resolve to "Yes" or "No".
+        property: The name of the document property that determines if an stl file should be referenced. The property should resolve to Yes or No.
     */
     public static OpenModelViewFramework.Library.Component CreateComponentTree(this SldWorks app, string name, string property)
     {
@@ -274,7 +274,7 @@ public static class SldWorksExtensions
         files: The stl file names sorted in ascending order.
         componentPath: The component path relative to the root.
         componentName: The component name.
-        property: The name of the document property that determines if an stl file should be referenced. The property should resolve to "Yes" or "No".
+        property: The name of the document property that determines if an stl file should be referenced. The property should resolve to Yes or No.
         config: The component configuration.
         transform: The component transform.
         isHidden: Indicates if the component is hidden.
