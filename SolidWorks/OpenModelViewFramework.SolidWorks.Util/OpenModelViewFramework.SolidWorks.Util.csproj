@@ -8,7 +8,7 @@
     <Platforms>AnyCPU;x64</Platforms>
     <Title>Open Model View Framework SolidWorks Utility</Title>
     <Version>0.9.0</Version>
-    <Authors>Drafting Extensions, LLC</Authors>
+    <Authors>-</Authors>
   </PropertyGroup>
 
   <ItemGroup>

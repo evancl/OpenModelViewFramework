@@ -8,7 +8,8 @@
     <SignAssembly>True</SignAssembly>
     <Title>Open Model View Framework SolidWorks Library</Title>
     <Version>0.9.0</Version>
-    <Authors>Drafting Extensions, LLC</Authors>
+    <Authors>-</Authors>
+    <AssemblyOriginatorKeyFile>KeyPair.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

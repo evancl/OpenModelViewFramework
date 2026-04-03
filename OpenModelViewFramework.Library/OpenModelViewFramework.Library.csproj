@@ -8,9 +8,10 @@
     <SignAssembly>True</SignAssembly>
     <Title>Open Model View Framework Library</Title>
     <Version>0.9.0</Version>
-    <Authors>Drafting Extensions, LLC</Authors>
+    <Authors>-</Authors>
     <Company></Company>
     <Platforms>AnyCPU;x64</Platforms>
+    <AssemblyOriginatorKeyFile>KeyPair.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
 </Project>

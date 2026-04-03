@@ -1,13 +1,32 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenModelViewFramework.SolidWorks.Library", "SolidWorks\OpenModelViewFramework.SolidWorks.Library\OpenModelViewFramework.SolidWorks.Library.csproj", "{BA5C22C6-C61A-426E-BF91-CBB584916BEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenModelViewFramework.SolidWorks.Util", "SolidWorks\OpenModelViewFramework.SolidWorks.Util\OpenModelViewFramework.SolidWorks.Util.csproj", "{93CB192F-0BE0-4BC5-ABE9-FDA975324093}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenModelViewFramework.Library", "OpenModelViewFramework.Library\OpenModelViewFramework.Library.csproj", "{260A7CB1-4AB9-435C-8163-AF03D0C7D1DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Web\Assembly.js = Web\Assembly.js
+		Web\AssemblyData.js = Web\AssemblyData.js
+		Web\AssemblyStep.js = Web\AssemblyStep.js
+		Web\AssemblyStepComponent.js = Web\AssemblyStepComponent.js
+		Web\Camera.js = Web\Camera.js
+		Web\Component.js = Web\Component.js
+		Web\ComponentData.js = Web\ComponentData.js
+		Web\Light.js = Web\Light.js
+		Web\Line.js = Web\Line.js
+		Web\LineSegment.js = Web\LineSegment.js
+		Web\LinkedList.js = Web\LinkedList.js
+		Web\ModelViewer.js = Web\ModelViewer.js
+		Web\Node.js = Web\Node.js
+		Web\Part.js = Web\Part.js
+		Web\Point.js = Web\Point.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
