@@ -48,7 +48,7 @@ struct AssemblyStepComponent
 };
 ```
 ## Component Data File (.cdata)
-A component data file stores viewable geometry and any component properties that should be updated. If the compressed format is used, the first model geometry ID is set to 0. The following model geometry IDs are incremented sequentially by 1.
+A component data file stores viewable geometry and any component properties that should be updated. If the compressed format is used, the first model geometry ID is set to 0 and the following model geometry IDs are incremented sequentially by 1.
 ```c
 struct ComponentDataFile
 {
