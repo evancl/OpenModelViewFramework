@@ -108,13 +108,13 @@ struct ComponentTreeFile
     uint8 isHidden;
     uint8 nameLength;
     int8 name[];
-    // For parts only.
+    // Present for parts only.
     uint8 properties[4];
-    // For parts only.
+    // Present for parts only.
     float transform[12];
-    // For assemblies only.
+    // Present for assemblies only.
     int16 childrenCount;
-    // For assemblies only.
+    // Present for assemblies only.
     struct ComponentTreeFile children[];
 }
 ```
