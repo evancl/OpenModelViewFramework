@@ -9,19 +9,19 @@ class AssemblyStepComponent
         const decoder = new TextDecoder();
         // Name of the component
         this.name = decoder.decode(nameData);
-        const hasTransform = AssemblyData.view.getUint8(AssemblyData.index, true);
+        const hasTransform = AssemblyData.view.getUint8(AssemblyData.index, true) == 1;
         AssemblyData.index++;
         /*
             Transform data.
             
             Δx, Δy, Δz
         */
-        if (hasTransform == 0)
+        if (!hasTransform)
             this.transform = null;
         else
         {
-            this.transform = new Float32Array(3);
-            for (let i = 0; i < 3; i++)
+            this.transform = vec3.create();
+            for (let i = 0; i < this.transform.length; i++)
             {
                 this.transform[i] = AssemblyData.view.getFloat32(AssemblyData.index, true);
                 AssemblyData.index += 4;

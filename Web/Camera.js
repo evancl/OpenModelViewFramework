@@ -3,18 +3,17 @@ class Camera
     /*
         Class constructor.
 
-        position: The camera position in model space.
+        position: The camera position in model space relative to the model center.
+        boundingBox: The model cube bounding box.
         zoomSensitivity: A floating point value that indicates the zoom sensitivity.
         rotateSensitivity: A floating point value that indicates the rotate sensitivity.
-        left: The left bound of the frustum.
-        right: The right bound of the frustum.
-        bottom: The bottom bound of the frustum.
-        top: The top bound of the frustum.
-        near: The near bound of the frustum.
-        far: The far bound of the frustum.
     */
-    constructor(position, zoomSensitivity, rotateSensitivity, left, right, bottom, top, near, far)
+    constructor(position, boundingBox, zoomSensitivity, rotateSensitivity)
     {
+        // Canvas element.
+        const viewer = document.querySelector("#model-viewer");
+        const aspectRatio = viewer.scrollWidth / viewer.scrollHeight;
+        const delta = (boundingBox[4] - boundingBox[1]) * (aspectRatio - 1) / 2;
         // Camera zoom sensitivity.
         this.zoomSensitivity = zoomSensitivity;
         // Camera rotate sensitivity.
@@ -29,22 +28,21 @@ class Camera
         // Theta. Units are in radians.
         this.theta = denominator == 0 ? 0 : Math.asin(-position[2] / denominator);
         // Left bound of the frustum.
-        this.left = left;
+        this.left = boundingBox[0] - delta;
         // Right bound of the frustum.
-        this.right = right;
-        // Top bound of the frustum.
-        this.top = top;
+        this.right = boundingBox[3] + delta;
         // Bottom bound of the frustum.
-        this.bottom = bottom;
+        this.bottom = boundingBox[1];
+        // Top bound of the frustum.
+        this.top = boundingBox[4];
         // Near bound of the frustum.
-        this.near = near;
+        this.near = .001;
         // Far bound of the frustum.
-        this.far = far;
+        this.far = Math.abs(boundingBox[5]) + Math.abs(boundingBox[2]) + radius;
         // Projection matrix.
-        this.projection = mat4.create();
-        this.projection = mat4.ortho(this.projection, this.left, this.right, this.bottom, this.top, this.near, this.far);
+        this.projection = mat4.ortho(new Float32Array(16), this.left, this.right, this.bottom, this.top, this.near, this.far);
         // View matrix.
-        this.view = mat4.create();
+        this.view = new Float32Array(16);
         this.view[3] = 0;
         this.view[4] = 0;
         this.view[7] = 0;
@@ -94,8 +92,8 @@ class Camera
         const delta = this.zoomSensitivity * event.deltaY;
         this.left -= delta * (x - this.left);
         this.right += delta * (this.right - x);
-        this.top += delta * (this.top - y);
         this.bottom -= delta * (y - this.bottom);
+        this.top += delta * (this.top - y);
         this.projection = mat4.ortho(this.projection, this.left, this.right, this.bottom, this.top, this.near, this.far);
     }
     /*

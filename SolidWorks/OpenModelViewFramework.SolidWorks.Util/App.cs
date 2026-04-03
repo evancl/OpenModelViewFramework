@@ -52,8 +52,8 @@ class App
                     if (args.Length != 3)
                         throw new Exception("App.Run error: Invalid number of arguments.");
                     CreateProcess();
-                    var component = Instance.CreateComponentTree(args[1], args[2]);
-                    component.CreateComponentTreeFile();
+                    var component = Instance.CreateComponentTree(args[1], args[2], out double[] boundingBox);
+                    component.CreateComponentTreeFile(boundingBox);
                     break;
                 case "-stl":
                     if (args.Length != 2)

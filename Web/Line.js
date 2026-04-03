@@ -17,16 +17,8 @@ class Line
         this.start = new Point();
         // Explode line end point.
         this.end = new Point();
-        const start = vec3.fromValues(
-            this.start.x,
-            this.start.y,
-            this.start.z
-        );
-        const end = vec3.fromValues(
-            this.end.x,
-            this.end.y,
-            this.end.z
-        );
+        const start = vec3.fromValues(this.start.x, this.start.y, this.start.z);
+        const end = vec3.fromValues(this.end.x, this.end.y, this.end.z);
         // Path vector.
         this.path = vec3.fromValues(
             end[0] - start[0],
@@ -52,7 +44,7 @@ class Line
             const axis = vec3.cross(vec3.create(), y, this.path);
             const angle = vec3.angle(y, this.path);
             // Matrix that aligns the line segment to the path.
-            this.transform = mat4.fromRotation(mat4.create(), angle, axis);
+            this.transform = mat4.fromRotation(new Float32Array(16), angle, axis);
         }
     }
     /*
@@ -67,29 +59,30 @@ class Line
         let length = lineScale * assemblyData.lineLength;
         if (length > this.pathLength)
             length = this.pathLength;
+        const thicknessScale = lineScale * assemblyData.lineThickness;
         for (let i = 3; i < this.model.length; i += 6)
         {
-            this.model[i] *= lineScale * assemblyData.lineThickness;
+            this.model[i] *= thicknessScale;
             this.model[i + 1] *= length;
-            this.model[i + 2] *= lineScale * assemblyData.lineThickness;
+            this.model[i + 2] *= thicknessScale;
         }
-        const numberOfSegments = Math.ceil(Math.floor(this.pathLength / (lineScale * assemblyData.lineLength)) / 2);
+        const numberOfSegments = Math.ceil(.5 * Math.floor(this.pathLength / length));
+        this.translations.length = numberOfSegments;
         if (numberOfSegments > 1)
         {
-            const factor = 2 * lineScale * assemblyData.lineLength;
-            this.translations.length = numberOfSegments;
+            const factor = 2 * length;
             for (var i = 1; i < numberOfSegments; i++)
                 this.translations[i] = vec3.add(vec3.create(), this.translations[0], vec3.scale(vec3.create(), this.path, i * factor));
         }
-        const partialLength = this.pathLength - 2 * numberOfSegments * lineScale * assemblyData.lineLength;
+        const partialLength = this.pathLength - 2 * numberOfSegments * length;
         if (partialLength > 0)
         {
             this.partial = [...assemblyData.lineSegment.model];
             for (let i = 3; i < this.partial.length; i += 6)
             {
-                this.partial[i] *= lineScale * assemblyData.lineThickness;
+                this.partial[i] *= thicknessScale;
                 this.partial[i + 1] *= partialLength;
-                this.partial[i + 2] *= lineScale * assemblyData.lineThickness;
+                this.partial[i + 2] *= thicknessScale;
             }
             this.partialTranslation = vec3.add(vec3.create(), this.translations[0], vec3.scale(vec3.create(), this.path, this.pathLength - partialLength));
         }

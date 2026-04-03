@@ -32,9 +32,9 @@ class AssemblyData
             3: S (0 - 1)
         */
         this.properties = vec4.create();
-        for (let i = 0; i < 4; i++)
+        for (let i = 0; i < this.properties.length; i++)
         {
-            this.properties[i] = AssemblyData.view.getUint8(AssemblyData.index, true) / 255.0;
+            this.properties[i] = AssemblyData.view.getUint8(AssemblyData.index, true) / 255;
             AssemblyData.index++;
         }
         // Assembly steps.
@@ -44,15 +44,5 @@ class AssemblyData
         this.lineSegment = new LineSegment(36);
         for (let i = 0; i < this.steps.length; i++)
             this.steps[i] = new AssemblyStep();
-    }
-    /*
-        Updates the line geometry after zooming.
-
-        viewer: The model viewer to use.
-    */
-    updateLines(viewer)
-    {
-        for (let i = 0; i < this.steps.length; i++)
-            this.steps[i].updateLines(viewer);
     }
 }

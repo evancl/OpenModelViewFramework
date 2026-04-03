@@ -1,5 +1,5 @@
 # OpenModelViewFramework
-This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses three files and WebGL to represent and display 3D models. A demo can be viewed here.
+This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses three files, glMatrix, and WebGL to represent and display 3D models. A demo can be viewed here.
 ## Assembly Data File (.adata)
 An assembly data file contains each assembly step and indicates which components are in each one. It also includes any assembly step specific component transforms, explode line start and end points,
 and explode line properties.
@@ -17,7 +17,7 @@ struct AssemblyDataFile
 struct AssemblyStep
 {
     uint8 nameLength;
-    uint8 name[];
+    int8 name[];
     int16 linesCount;
     // Present if linesCount > 0.
     struct Line lines[];
@@ -41,7 +41,7 @@ struct Point
 struct AssemblyStepComponent
 {
     uint8 nameLength;
-    uint8 name[];
+    int8 name[];
     uint8 hasTransform;
     // Present if hasTransform = 1.
     float transform[3];
@@ -67,7 +67,7 @@ struct ComponentDataFile
 struct ComponentProperties
 {
     int16 pathLength;
-    uint8 path[];
+    int8 path[];
     uint8 updatedProperties;
     // The following members are present if the corresponding bit is set in updatedProperties.
     uint8 isHidden;
@@ -103,16 +103,17 @@ A component tree file stores the CAD model hierarchy, component locations relati
 ```c
 struct ComponentTreeFile
 {
-    short id;
-    byte isHidden;
-    byte nameLength;
-    byte name[];
+    static float boundingBox[6];
+    int16 id;
+    uint8 isHidden;
+    uint8 nameLength;
+    int8 name[];
     // For parts only.
-    byte properties[4];
+    uint8 properties[4];
     // For parts only.
     float transform[12];
     // For assemblies only.
-    short childrenCount;
+    int16 childrenCount;
     // For assemblies only.
     struct ComponentTreeFile children[];
 }
@@ -157,8 +158,8 @@ function createViewer()
     // Send a request to retrieve the component tree file.
     // data = ...
     const component = Component.parse(data);
-    const camera = new Camera([.2, .2, .2], .0005, .005, -.15, .15, -.15, .15, .01, 1);
-    const light = new Light([0, 0, 1], [1, 0, -1], 0x151515, 0xC8C8C8, 0xFFFFFF);
+    const camera = new Camera(Component.getIsometricCameraPosition(), Component.boundingBox, .0005, .005);
+    const light = new Light(0x151515, 0xC8C8C8, 0xFFFFFF);
     viewer = new ModelViewer(component, assemblyData, componentData, camera, light);
 }
 ```

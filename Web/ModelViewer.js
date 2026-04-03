@@ -35,11 +35,11 @@ class ModelViewer
         // Indicates if the model is being rotated.
         this.isRotating = false;
         // Explode line scale.
-        this.lineScale = (this.camera.right - this.camera.left) / 1000;
+        this.lineScale = .001 * (this.camera.right - this.camera.left);
         // Cursor x position.
-        this.cursorX = 0.0;
+        this.cursorX = 0;
         // Cursor y position.
-        this.cursorY = 0.0;
+        this.cursorY = 0;
         // Viewer context.
         this.ctx = this.viewer.getContext("webgl2", { antialias: true });
         if (this.ctx === null)
@@ -76,6 +76,8 @@ class ModelViewer
         this.specularLightPosition = this.ctx.getUniformLocation(this.shaderProgram, "specularLightPosition");
         // Model matrix location.
         this.model = this.ctx.getUniformLocation(this.shaderProgram, "modelMatrix");
+        // Translation matrix location.
+        this.translation = this.ctx.getUniformLocation(this.shaderProgram, "translationMatrix");
         // View matrix location.
         this.view = this.ctx.getUniformLocation(this.shaderProgram, "viewMatrix");
         // Projection matrix location.
@@ -88,6 +90,7 @@ class ModelViewer
         this.ctx.uniform3fv(this.diffuseLightVector, this.light.diffuseVector);
         this.ctx.uniform3fv(this.specularLightColor, this.light.specular);
         this.ctx.uniform3fv(this.specularLightPosition, this.light.specularPosition);
+        this.ctx.uniformMatrix4fv(this.translation, false, Component.translation);
         this.ctx.uniformMatrix4fv(this.view, false, this.camera.view);
         this.ctx.uniformMatrix4fv(this.projection, false, this.camera.projection);
         // Indicates if the visible component list has been updated.
@@ -160,6 +163,7 @@ class ModelViewer
         attribute vec3 vertexPosition;
         attribute vec3 vertexNormal;
         uniform mat4 modelMatrix;
+        uniform mat4 translationMatrix;
         uniform mat4 viewMatrix;
         uniform mat4 projectionMatrix;
         uniform vec3 cameraPosition;
@@ -174,7 +178,7 @@ class ModelViewer
 
         void main()
         {
-            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
+            gl_Position = projectionMatrix * viewMatrix * translationMatrix * modelMatrix * vec4(vertexPosition, 1.0);
             vec3 viewNormal = vec3(viewMatrix * modelMatrix * vec4(vertexNormal, 0.0));
             vec3 diffuseLight = diffuseLightColor * max(dot(viewNormal, diffuseLightVector), 0.0);
             vec3 v0 = normalize(specularLightPosition - gl_Position.xyz);
@@ -355,7 +359,7 @@ class ModelViewer
         self.camera.zoomCamera(self, event);
         self.lineScale *= (self.camera.right - self.camera.left) / (right - left);
         if (self.isExploded)
-            self.assemblyData.updateLines(self);
+            self.assemblyData.steps[self.assemblyStep].updateLines(self);
         self.ctx.uniformMatrix4fv(
             self.projection,
             false,
@@ -409,7 +413,7 @@ class ModelViewer
                 this.root.getChild(components[i].name).explode();
         }
         this.isExploded = true;
-        this.assemblyData.updateLines(this);
+        this.assemblyData.steps[this.assemblyStep].updateLines(this);
         this.render();
     }
     // Places the model in a collapsed state.
@@ -569,7 +573,7 @@ class ModelViewer
         {
             for (let i = 0; i < 4; i++)
             {
-                component.properties[i] = view.getUint8(index, true) / 255.0;
+                component.properties[i] = view.getUint8(index, true) / 255;
                 index++;
             }
         }

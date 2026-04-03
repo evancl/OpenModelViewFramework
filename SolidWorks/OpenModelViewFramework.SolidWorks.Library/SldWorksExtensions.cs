@@ -208,8 +208,9 @@ public static class SldWorksExtensions
         app: The SolidWorks application.
         name: The file name.
         property: The name of the document property that determines if an stl file should be referenced. The property should resolve to Yes or No.
+        boundingBox: The model bounding box.
     */
-    public static OpenModelViewFramework.Library.Component CreateComponentTree(this SldWorks app, string name, string property)
+    public static OpenModelViewFramework.Library.Component CreateComponentTree(this SldWorks app, string name, string property, out double[] boundingBox)
     {
         if (!File.Exists(name))
             throw new Exception($"SldWorks.CreateComponentTree error: {name} doesn't exist.");
@@ -250,6 +251,10 @@ public static class SldWorksExtensions
         );
         if (errors == (int)swActivateDocError_e.swGenericActivateError)
             throw new Exception($"SldWorks.CreateComponentTree error: Failed to activate {name}. Errors: {errors}.");
+        if (documentType == (int)swDocumentTypes_e.swDocASSEMBLY)
+            boundingBox = (double[])((AssemblyDoc)document).GetBox(0);
+        else
+            boundingBox = (double[])((PartDoc)document).GetPartBox(false);
         FirstExpression = new Regex("[\\:*?<|]+");
         SecondExpression = new Regex("[>]+");
         var component = app.CreateComponentTree(

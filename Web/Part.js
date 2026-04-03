@@ -47,7 +47,7 @@ class Part extends Component
         this.properties = vec4.create();
         for (let i = 0; i < 4; i++)
         {
-            this.properties[i] = Component.view.getUint8(Component.index, true) / 255.0;
+            this.properties[i] = Component.view.getUint8(Component.index, true) / 255;
             Component.index++;
         }
     }
@@ -66,14 +66,17 @@ class Part extends Component
     /*
         Sets the exploded and collapsed transform of this part.
 
-        transform: The exploded transform.
+        transform: The exploded transform relative to the collapsed state.
     */
     setExplodedAndCollapsed(transform)
     {
-        this.collapsedTransform = new Float32Array(3);
+        this.collapsedTransform = vec3.create();
+        this.explodedTransform = vec3.create();
         for (let i = 0; i < this.collapsedTransform.length; i++)
+        {
             this.collapsedTransform[i] = this.transform[i + 12];
-        this.explodedTransform = transform;
+            this.explodedTransform[i] = this.transform[i + 12] + transform[i];
+        }
     }
     // Sets the transform using the data view.
     setTransform()

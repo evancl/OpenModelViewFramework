@@ -38,7 +38,7 @@ public class Component
     internal virtual void GetBinaryRep(List<byte> data)
     {
         data.AddRange(GetBytes(ID));
-        data.Add(IsHidden ? 1 : 0);
+        data.Add(IsHidden ? (byte)1 : (byte)0);
         var bytes = Encoding.UTF8.GetBytes(Name);
         data.Add((byte)bytes.Length);
         data.AddRange(bytes);
@@ -56,12 +56,18 @@ public class Component
         data.AddRange(bytes);
         data.Add(properties);
         if ((properties & 1) != 0)
-            data.Add(IsHidden ? 1 : 0);
+            data.Add(IsHidden ? (byte)1 : (byte)0);
     }
-    // Creates a ctree file in the current working directory.
-    public void CreateComponentTreeFile()
+    /*
+        Creates a ctree file in the current working directory.
+
+        boundingBox: The model bounding box.
+    */
+    public void CreateComponentTreeFile(double[] boundingBox)
     {
         List<byte> data = new();
+        for (var i = 0; i < boundingBox.Length; i++)
+            data.AddRange(GetBytes((float)boundingBox[i]));
         GetBinaryRep(data);
         File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}\\{Name}.ctree", data.ToArray());
     }

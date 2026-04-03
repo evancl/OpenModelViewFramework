@@ -40,8 +40,9 @@ class ComponentData
             {
                 count = ComponentData.view.getUint32(ComponentData.index, true);
                 ComponentData.index += 4;
-                this.models[i] = new Float32Array(ComponentData.view.buffer.slice(ComponentData.index, ComponentData.index + count * 72));
-                ComponentData.index += count * 72;
+                const size = count * 72;
+                this.models[i] = new Float32Array(ComponentData.view.buffer.slice(ComponentData.index, ComponentData.index + size));
+                ComponentData.index += size;
             }
         }
     }

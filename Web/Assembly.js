@@ -48,7 +48,7 @@ class Assembly extends Component
     /*
         Sets the exploded and collapsed transforms of the child components.
 
-        transform: The exploded transform.
+        transform: The exploded transform relative to the collapsed state.
     */
     setExplodedAndCollapsed(transform)
     {

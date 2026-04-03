@@ -23,7 +23,7 @@ class LineSegment
         vector = [0, 1, 0];
         modelIndex = this.writeData(numberOfTriangles, numberOfTriangles, modelIndex, vector);
         const increment = 2 * Math.PI / numberOfTriangles;
-        const initialAngle = increment / 2;
+        const initialAngle = .5 * increment;
         for (let i = 0; i < numberOfTriangles; i++)
         {
             vector =
@@ -120,8 +120,8 @@ class LineSegment
         for (let i = 0; i < numberOfTriangles; i++)
         {
             this.vertices[i] = new Float32Array(2);
-            this.vertices[i][0] = Math.cos(increment * i);
-            this.vertices[i][1] = Math.sin(increment * i);
+            this.vertices[i][0] = .5 * Math.cos(increment * i);
+            this.vertices[i][1] = .5 * Math.sin(increment * i);
         }
     }
     /*

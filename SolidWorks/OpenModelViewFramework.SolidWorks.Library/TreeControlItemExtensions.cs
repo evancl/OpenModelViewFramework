@@ -28,13 +28,15 @@ public static class TreeContolItemExtensions
             float[] translation;
             if (isExploded)
             {
-                var transform = (MathTransform)component.GetSpecificTransform(false);
-                var data = (double[])transform.ArrayData;
+                var explodedTransform = (MathTransform)component.GetSpecificTransform(false);
+                var explodedData = (double[])explodedTransform.ArrayData;
+                var collapsedTransform = (MathTransform)component.GetSpecificTransform(true);
+                var collapsedData = (double[])collapsedTransform.ArrayData;
                 translation =
                 [
-                    (float)data[9],
-                    (float)data[10],
-                    (float)data[11]
+                    (float)(explodedData[9] - collapsedData[9]),
+                    (float)(explodedData[10] - collapsedData[10]),
+                    (float)(explodedData[11] - collapsedData[11])
                 ];
             }
             else

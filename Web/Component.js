@@ -12,6 +12,14 @@ class Component
     static view;
     // Pointer within the data view buffer.
     static index;
+    // Model cube bounding box.
+    static boundingBox;
+    // Model center.
+    static modelCenter;
+    // Model radius.
+    static modelRadius;
+    // Matrix that translates the model center to the origin.
+    static translation;
 
     constructor()
     {
@@ -52,6 +60,11 @@ class Component
             component = new Part();
         return component;
     }
+    // Gets a camera position in model space relative to the model center that results in an isometric view of the model.
+    static getIsometricCameraPosition()
+    {
+        return vec3.fromValues(Component.modelRadius, Component.modelRadius, Component.modelRadius);
+    }
     /*
         Returns the root component that is represented by the request body.
 
@@ -62,6 +75,26 @@ class Component
         const data = new Uint8Array(body);
         Component.view = new DataView(data.buffer);
         Component.index = 0;
+        Component.boundingBox = new Float32Array(6);
+        for (let i = 0; i < Component.boundingBox.length; i++)
+        {
+            Component.boundingBox[i] = Component.view.getFloat32(Component.index, true);
+            Component.index += 4;
+        }
+        const modelCorner = vec3.fromValues(Component.boundingBox[0], Component.boundingBox[1], Component.boundingBox[2]);
+        Component.modelCenter = vec3.fromValues(
+            .5 * (Component.boundingBox[0] + Component.boundingBox[3]),
+            .5 * (Component.boundingBox[1] + Component.boundingBox[4]),
+            .5 * (Component.boundingBox[2] + Component.boundingBox[5])
+        );
+        Component.modelRadius = vec3.distance(Component.modelCenter, modelCorner);
+        Component.boundingBox[0] = -Component.modelRadius;
+        Component.boundingBox[1] = -Component.modelRadius;
+        Component.boundingBox[2] = -Component.modelRadius;
+        Component.boundingBox[3] = Component.modelRadius;
+        Component.boundingBox[4] = Component.modelRadius;
+        Component.boundingBox[5] = Component.modelRadius;
+        Component.translation = mat4.fromTranslation(new Float32Array(16), vec3.fromValues(-Component.modelCenter[0], -Component.modelCenter[1], -Component.modelCenter[2]));
         return Component.createComponent();
     }
 }

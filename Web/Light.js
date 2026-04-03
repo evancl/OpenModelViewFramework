@@ -3,14 +3,16 @@ class Light
     /*
         Class constructor.
 
-        diffuseDirection: The normalized diffuse light direction in clip space.
-        specularPosition: The position of the specular light in clip space.
         ambient: A COLORREF value that represents the ambient light.
         diffuse: A COLORREF value that represents the diffuse light.
         specular: A COLORREF value that represents the specular light.
     */
-    constructor(diffuseDirection, specularPosition, ambient, diffuse, specular)
+    constructor(ambient, diffuse, specular)
     {
+        // Normalized diffuse light direction in clip space.
+        this.diffuseVector = vec3.fromValues(0, 0, 1);
+        // Position of the specular light in clip space.
+        this.specularPosition = vec3.fromValues(1, 0, -1);
         // Ambient light color.
         this.ambient = vec3.fromValues(
             (ambient & 0xFF) / 255,
@@ -29,9 +31,5 @@ class Light
             (specular >> 8 & 0xFF) / 255,
             (specular >> 16 & 0xFF) / 255
         );
-        // Diffuse light direction.
-        this.diffuseVector = vec3.clone(diffuseDirection);
-        // Specular light position.
-        this.specularPosition = vec3.clone(specularPosition);
     }
 }
