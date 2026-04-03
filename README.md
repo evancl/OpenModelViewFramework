@@ -85,7 +85,7 @@ struct Model
 struct ModelGeometry
 {
     uint32 trianglesCount;
-    struct Triangle triangles;
+    struct Triangle triangles[];
 };
 
 struct Triangle
