@@ -15,12 +15,8 @@ class Assembly extends Component
     */
     getChild(path)
     {
-        let name;
         const index = path.indexOf("/");
-        if (index == -1)
-            name = path;
-        else
-            name = path.substring(0, index);
+        const name = index == -1 ? path : path.substring(0, index);
         for (let i = 0; i < this.children.length; i++)
         {
             if (this.children[i].name == name)

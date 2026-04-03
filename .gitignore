@@ -1,6 +1,7 @@
 .vs*
 obj*
 bin*
+Web/open-model-viewer.min.js
 Web/Test.js
 Web/Test.adata
 Web/Test.cdata
