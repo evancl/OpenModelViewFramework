@@ -167,7 +167,7 @@ function createViewer()
 This repository contains CAD application specific code to generate the necessary model data for the web application and interface with any custom product configurators. Currently, only support for SolidWorks has been
 implemented.
 ### SolidWorks
-OpenModelViewFramework.SolidWorks.Util.exe is a command line application that creates the necessary model data for the web application from SolidWorks models. The following options are available:
+OpenModelViewFramework.SolidWorks.Util.exe is a command line application that creates the necessary model data for the web application from SolidWorks models. Creating an adata file requires a specific structure in the feature tree. Each assembly step is represented by a feature folder. The components within a folder belong to the assembly step. An exploded view that is associated with an assembly step should have the same name as the assembly step. The following options are available:
 ```txt
 -ad <name>: Creates an adata file and a json file using the sldasm file.
 ```
