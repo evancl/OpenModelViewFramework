@@ -10,7 +10,7 @@ struct AssemblyDataFile
     uint8 lineLength;
     uint8 lineThickness;
     uint8 properties[4];
-    uint8 stepsCount;
+    uint8 stepCount;
     struct AssemblyStep steps[];
 };
 
@@ -18,8 +18,8 @@ struct AssemblyStep
 {
     uint8 nameLength;
     int8 name[];
-    int16 linesCount;
-    // Present if linesCount > 0.
+    int16 lineCount;
+    // Present if lineCount > 0.
     struct Line lines[];
     int16 componentCount;
     struct AssemblyStepComponent components[];
@@ -54,13 +54,13 @@ struct ComponentDataFile
 {
     uint8 useCompressedFormat;
     // Present if useCompressedFormat = 0.
-    int16 propertiesCount;
-    // Present if propertiesCount > 0.
+    int16 propertyCount;
+    // Present if propertyCount > 0.
     struct ComponentProperties properties[];
-    int16 modelsCount;
-    // Present if useCompressedFormat = 0 and modelsCount > 0.
+    int16 modelCount;
+    // Present if useCompressedFormat = 0 and modelCount > 0.
     struct Model models[];
-    // Present if useCompressedFormat = 1 and modelsCount > 0.
+    // Present if useCompressedFormat = 1 and modelCount > 0.
     struct ModelGeometry geometry[];
 };
 
@@ -84,7 +84,7 @@ struct Model
 
 struct ModelGeometry
 {
-    uint32 trianglesCount;
+    uint32 triangleCount;
     struct Triangle triangles[];
 };
 
