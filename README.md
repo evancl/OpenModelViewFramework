@@ -119,7 +119,6 @@ struct ComponentTreeFile
 }
 ```
 ## Web Application
-The web application is available through a CDN.
 ### HTML:
 ```html
 <!DOCTYPE html>
@@ -132,11 +131,7 @@ The web application is available through a CDN.
         crossorigin="anonymous"
         defer>
     </script>
-    <script src=""
-        integrity=""
-        crossorigin="anonymous"
-        defer>
-    </script>
+    <script src="open-model-viewer.min.js" defer></script>
 </head>
 <body>
     <canvas id="model-viewer"></canvas>
