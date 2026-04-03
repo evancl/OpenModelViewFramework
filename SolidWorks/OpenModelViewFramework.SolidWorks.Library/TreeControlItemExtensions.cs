@@ -11,40 +11,51 @@ public static class TreeContolItemExtensions
 
         parent: The tree control item to use.
         document: The document to use.
+        components: The assembly components.
         isExploded: Indicates if the model is in an exploded state.
     */
-    public static List<AssemblyStepComponent> GetAssemblyComponents(this TreeControlItem parent, ModelDoc2 document, bool isExploded)
+    public static void GetAssemblyComponents(this TreeControlItem parent, ModelDoc2 document, ref List<AssemblyStepComponent> components, bool isExploded)
     {
-        List<AssemblyStepComponent> components = new();
         var item = parent.GetFirstChild();
         while (item != null)
         {
-            if (item.ObjectType != (int)swTreeControlItemType_e.swFeatureManagerItem_Component)
+            if (item.ObjectType == (int)swTreeControlItemType_e.swFeatureManagerItem_Feature)
             {
-                item = item.GetNext();
-                continue;
+                var feature = (Feature)item.Object;
+                if (feature.GetTypeName2() == "FtrFolder")
+                    item.GetAssemblyComponents(document, ref components, isExploded);
             }
-            var component = (Component2)item.Object;
-            float[] translation;
-            if (isExploded)
+            else if (item.ObjectType == (int)swTreeControlItemType_e.swFeatureManagerItem_Component)
             {
-                var explodedTransform = (MathTransform)component.GetSpecificTransform(false);
-                var explodedData = (double[])explodedTransform.ArrayData;
-                var collapsedTransform = (MathTransform)component.GetSpecificTransform(true);
-                var collapsedData = (double[])collapsedTransform.ArrayData;
-                translation =
-                [
-                    (float)(explodedData[9] - collapsedData[9]),
-                    (float)(explodedData[10] - collapsedData[10]),
-                    (float)(explodedData[11] - collapsedData[11])
-                ];
+                var component = (Component2)item.Object;
+                float[] translation;
+                if (isExploded)
+                {
+                    var explodedTransform = (MathTransform)component.GetSpecificTransform(false);
+                    var explodedData = (double[])explodedTransform.ArrayData;
+                    var collapsedTransform = (MathTransform)component.GetSpecificTransform(true);
+                    var collapsedData = (double[])collapsedTransform.ArrayData;
+                    var createTransform = explodedData[9] != collapsedData[9] ||
+                        explodedData[10] != collapsedData[10] ||
+                        explodedData[11] != collapsedData[11];
+                    if (createTransform)
+                    {
+                        translation =
+                        [
+                            (float)(explodedData[9] - collapsedData[9]),
+                            (float)(explodedData[10] - collapsedData[10]),
+                            (float)(explodedData[11] - collapsedData[11])
+                        ];
+                    }
+                    else
+                        translation = null;
+                }
+                else
+                    translation = null;
+                components.Add(new AssemblyStepComponent(component.GetName(document), translation));
             }
-            else
-                translation = null;
-            components.Add(new AssemblyStepComponent(component.GetName(document), translation));
             item = item.GetNext();
         }
-        return components;
     }
     /*
         Gets the tree control item with the given name.

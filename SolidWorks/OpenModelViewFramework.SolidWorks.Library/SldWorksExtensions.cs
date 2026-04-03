@@ -44,26 +44,27 @@ public static class SldWorksExtensions
         var config = document.ConfigurationManager.ActiveConfiguration;
         var assembly = (AssemblyDoc)document;
         document.Extension.HideFeatureManager(false);
-        var folders = document.FeatureManager.GetFolders(swFeatMgrPane_e.swFeatMgrPaneTop);
+        var folders = document.FeatureManager.GetRootFolders(swFeatMgrPane_e.swFeatMgrPaneTop);
         if (folders.Count == 0)
             throw new Exception($"SldWorks.CreateAssemblyData error: No folders were found in {name}.");
         var viewNames = (string[])assembly.GetExplodedViewNames2(config.Name);
         var data = new AssemblyData(1, 10, 1, new int[4], new AssemblyStep[folders.Count]);
+        List<AssemblyStepComponent> components = new();
         for (var i = 0; i < folders.Count; i++)
         {
             var item = folders[i];
             name = ((Feature)item.Object).Name;
-            List<AssemblyStepComponent> components;
             if (viewNames != null && viewNames.Contains(name))
             {
                 assembly.ShowExploded2(true, name);
-                components = item.GetAssemblyComponents(document, true);
+                item.GetAssemblyComponents(document, ref components, true);
                 assembly.ShowExploded2(false, name);
             }
             else
-                components = item.GetAssemblyComponents(document, false);
+                item.GetAssemblyComponents(document, ref components, false);
             // As of 3-26-26, there is no support for retrieving explode lines.
-            data.Steps[i] = new AssemblyStep(name, null, components);
+            data.Steps[i] = new AssemblyStep(name, null, [..components]);
+            components.Clear();
         }
         return data;
     }
