@@ -67,6 +67,7 @@ struct ComponentDataFile
 struct ComponentProperties
 {
     int16 pathLength;
+    // Present if pathLength > 0.
     int8 path[];
     uint8 updatedProperties;
     // The following members are present if the corresponding bit is set in updatedProperties.
