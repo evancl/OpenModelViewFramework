@@ -1,5 +1,5 @@
 # OpenModelViewFramework
-This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses three files, glMatrix, and WebGL to represent and display 3D models. A demo can be viewed here.
+This repository contains a collection of libraries and applications for displaying 3D models in a browser. The web application uses three files, glMatrix, and WebGL to represent and display 3D models. A demo can be viewed [here.](https://youtu.be/NUlpKCG6_xQ)
 ## Assembly Data File (.adata)
 An assembly data file contains each assembly step and indicates which components are in each one. It also includes any assembly step specific component transforms, explode line start and end points,
 and explode line properties.
